@@ -57,7 +57,7 @@ const { data: pulls, pending } = await useFetch('/api/pulls');
 
         <div class="space-y-4">
             <UFormField
-                label="Select your Pull Request"
+                label="Pull Request"
                 name="pulls"
             >
                 <USelectMenu
@@ -86,7 +86,7 @@ const { data: pulls, pending } = await useFetch('/api/pulls');
                 :disabled="!selectedPull"
                 class="cursor-pointer"
             >
-                Launch translation
+                Translate
             </UButton>
         </div>
 
