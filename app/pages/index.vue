@@ -4,34 +4,59 @@ const config = useRuntimeConfig();
 const selectedPull = ref('');
 const { data: pulls, pending: pendingPulls } = await useFetch('/api/pulls');
 
-const sourceFileContent = ref<any>(null);
-const fetchingFile = ref(false);
+const diffData = ref<{ diff: any, count: number, baseBranch: string } | null>(null);
+const fetchingDiff = ref(false);
+
+const isTranslating = ref(false);
+const translationResult = ref(null);
 
 watch(selectedPull, async (newBranch) => {
     if (!newBranch) return;
 
-    fetchingFile.value = true;
-    sourceFileContent.value = null;
+    fetchingDiff.value = true;
+    diffData.value = null;
+    translationResult.value = null;
 
     try {
         const folder = config.public.githubTranslationFolder;
         const filePath = folder.endsWith('/') ? `${folder}en.json` : `${folder}/en.json`;
 
-        const content = await $fetch('/api/file-content', {
+
+        diffData.value = await $fetch('/api/pr-diff', {
             query: {
                 branch: newBranch,
                 path: filePath
             }
         });
 
-        sourceFileContent.value = typeof content === 'string' ? JSON.parse(content) : content;
-
     } catch (err) {
-        console.error("Erreur lors de la récupération du fichier source", err);
+        console.error("Erreur lors du calcul du diff", err);
     } finally {
-        fetchingFile.value = false;
+        fetchingDiff.value = false;
     }
 });
+
+const startTranslation = async () => {
+    if (!diffData.value || diffData.value?.count === 0) return;
+
+    isTranslating.value = true;
+    try {
+        const result = await $fetch('/api/translate', {
+            method: 'POST',
+            body: {
+                content: diffData.value.diff
+            }
+        });
+
+        translationResult.value = result;
+        console.log("Traduction terminée :", result);
+
+    } catch (error) {
+        console.error("Erreur traduction:", error);
+    } finally {
+        isTranslating.value = false;
+    }
+};
 </script>
 
 <template>
@@ -91,32 +116,52 @@ watch(selectedPull, async (newBranch) => {
                 </USelectMenu>
             </UFormField>
 
-            <div v-if="fetchingFile" class="text-sm text-gray-500 flex items-center gap-2">
-                <UIcon name="i-heroicons-arrow-path" class="animate-spin" />
-                Loading source file (en.json)...
+            <div v-if="fetchingDiff" class="text-sm text-gray-500 flex items-center gap-2 justify-center py-4">
+                <UIcon name="i-heroicons-arrow-path" class="animate-spin w-5 h-5" />
+                <span>Analysing diff with base branch...</span>
             </div>
 
-            <div v-else-if="sourceFileContent" class="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-bold text-green-600 dark:text-green-400 flex items-center gap-1">
-                        <UIcon name="i-heroicons-check-circle" /> File loaded
-                    </span>
-                    <span class="text-xs text-gray-500">{{ Object.keys(sourceFileContent).length }} keys found</span>
+            <div v-else-if="diffData">
+
+                <UAlert
+                    v-if="diffData.count === 0"
+                    icon="i-heroicons-information-circle"
+                    color="amber"
+                    variant="subtle"
+                    title="No changes detected"
+                    description="This PR doesn't introduce any new translation keys in the source file compared to the base branch."
+                />
+
+                <div v-else class="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-primary-600 dark:text-primary-400 flex items-center gap-1">
+                            <UIcon name="i-heroicons-plus-circle" /> New content detected
+                        </span>
+                        <span class="text-xs text-gray-500 font-mono bg-white dark:bg-gray-900 px-2 py-0.5 rounded border border-gray-200 dark:border-gray-700">
+                            +{{ diffData.count }} keys
+                        </span>
+                    </div>
+                    <pre class="text-[10px] font-mono overflow-auto max-h-48 text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-950 p-2 rounded border border-gray-100 dark:border-gray-800">{{ diffData.diff }}</pre>
                 </div>
-                <pre class="text-[10px] font-mono overflow-auto max-h-32 text-gray-600 dark:text-gray-300">{{ sourceFileContent }}</pre>
             </div>
 
             <UButton
                 block
                 size="xl"
                 color="primary"
-                icon="i-heroicons-rocket-launch"
-                :loading="fetchingFile"
-                :disabled="!selectedPull || !sourceFileContent"
+                icon="i-heroicons-sparkles"
+                :loading="isTranslating"
+                :disabled="!selectedPull || fetchingDiff || !diffData || diffData.count === 0"
                 class="cursor-pointer"
+                @click="startTranslation"
             >
-                Start Translation
+                {{ isTranslating ? 'Translating via AI...' : 'Translate New Keys' }}
             </UButton>
+
+            <div v-if="translationResult" class="mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                <h3 class="text-sm font-bold text-green-700 dark:text-green-400 mb-2">Translation Complete!</h3>
+                <pre class="text-[10px] font-mono overflow-auto max-h-32">{{ translationResult }}</pre>
+            </div>
         </div>
 
     </UContainer>
