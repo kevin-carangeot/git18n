@@ -1,4 +1,26 @@
-import { calculateJsonDiff } from "~~/server/utils/diff";
+import { calculateJsonDiff, calculateDetailedDiff } from "~~/server/utils/diff";
+
+// 👇 HELPER FUNCTION: Recursively counts only the final values (leaves)
+// It ignores objects/folders and counts actual strings/numbers
+const countLeafNodes = (obj: any): number => {
+  let count = 0;
+
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      const value = obj[key];
+
+      // If it's an object (nested folder), dig deeper
+      if (typeof value === 'object' && value !== null) {
+        count += countLeafNodes(value);
+      }
+      // If it's a value (string, number, boolean), it counts as 1 key
+      else {
+        count++;
+      }
+    }
+  }
+  return count;
+};
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig();
@@ -9,6 +31,7 @@ export default defineEventHandler(async (event) => {
 
   if (!branchName || !filePath) throw createError({ statusCode: 400, statusMessage: 'Missing parameters' });
 
+  // Extract owner/repo
   const repoUrl = config.public.githubRepoUrl;
   const match = repoUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
   if (!match) throw createError({ statusCode: 500, statusMessage: 'Invalid Repo Config' });
@@ -20,42 +43,45 @@ export default defineEventHandler(async (event) => {
     'Accept': 'application/vnd.github.raw'
   };
 
+  // Helper to fetch and parse safely
+  const fetchJsonFile = async (ref: string) => {
+    try {
+      const raw = await $fetch<string>(`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`, {
+        headers,
+        query: { ref },
+        responseType: 'text'
+      });
+      return JSON.parse(raw);
+    } catch (e) {
+      return {};
+    }
+  };
+
   try {
-    // 1. Get Repo Info to find default branch
+    // 1. Get Repo Info for default branch
     const repoInfo = await $fetch<any>(`https://api.github.com/repos/${owner}/${repo}`, {
       headers: { Authorization: `Bearer ${config.githubToken}` }
     });
     const baseBranch = repoInfo.default_branch;
 
-    // 2. Helper function to fetch and parse safely
-    const fetchJsonFile = async (ref: string) => {
-      try {
-        const raw = await $fetch<string>(`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`, {
-          headers,
-          query: { ref },
-          responseType: 'text'
-        });
-        return JSON.parse(raw);
-      } catch (e) {
-        console.warn(`Failed to fetch/parse file on branch ${ref}:`, e);
-        return {};
-      }
-    };
-
-    // 3. Fetch both versions
+    // 2. Fetch both versions
     const [headContent, baseContent] = await Promise.all([
       fetchJsonFile(branchName),
       fetchJsonFile(baseBranch)
     ]);
 
-    // 4. Calculate Diff
-    const diff = calculateJsonDiff(baseContent, headContent);
+    // 3. Calculate Diffs
+    const diffJson = calculateJsonDiff(baseContent, headContent);
+    const visualDiff = calculateDetailedDiff(baseContent, headContent);
+
+    const preciseCount = countLeafNodes(diffJson);
 
     return {
       baseBranch,
       headBranch: branchName,
-      diff,
-      count: countKeys(diff)
+      diff: diffJson,
+      visualDiff: visualDiff,
+      count: preciseCount
     };
 
   } catch (error) {
@@ -63,16 +89,3 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, statusMessage: 'Diff calculation failed' });
   }
 });
-
-// Helper to count keys in a nested object
-function countKeys(obj: any): number {
-  let count = 0;
-  for (const k in obj) {
-    if (typeof obj[k] === 'object' && obj[k] !== null) {
-      count += countKeys(obj[k]);
-    } else {
-      count++;
-    }
-  }
-  return count;
-}

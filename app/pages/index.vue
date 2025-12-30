@@ -4,7 +4,13 @@ const config = useRuntimeConfig();
 const selectedPull = ref('');
 const { data: pulls, pending: pendingPulls } = await useFetch('/api/pulls');
 
-const diffData = ref<{ diff: any, count: number, baseBranch: string } | null>(null);
+const diffData = ref<{
+    diff: any;
+    visualDiff: any;
+    count: number;
+    baseBranch: string
+} | null>(null);
+
 const fetchingDiff = ref(false);
 
 const isTranslating = ref(false);
@@ -21,7 +27,6 @@ watch(selectedPull, async (newBranch) => {
         const folder = config.public.githubTranslationFolder;
         const filePath = folder.endsWith('/') ? `${folder}en.json` : `${folder}/en.json`;
 
-
         diffData.value = await $fetch('/api/pr-diff', {
             query: {
                 branch: newBranch,
@@ -30,7 +35,7 @@ watch(selectedPull, async (newBranch) => {
         });
 
     } catch (err) {
-        console.error("Erreur lors du calcul du diff", err);
+        console.error("Error calculating diff:", err);
     } finally {
         fetchingDiff.value = false;
     }
@@ -49,10 +54,10 @@ const startTranslation = async () => {
         });
 
         translationResult.value = result;
-        console.log("Traduction terminée :", result);
+        console.log("Translation complete:", result);
 
     } catch (error) {
-        console.error("Erreur traduction:", error);
+        console.error("Translation error:", error);
     } finally {
         isTranslating.value = false;
     }
@@ -133,6 +138,7 @@ const startTranslation = async () => {
                 />
 
                 <div v-else class="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-xs font-bold text-primary-600 dark:text-primary-400 flex items-center gap-1">
                             <UIcon name="i-heroicons-plus-circle" /> New content detected
@@ -141,7 +147,10 @@ const startTranslation = async () => {
                             +{{ diffData.count }} keys
                         </span>
                     </div>
-                    <pre class="text-[10px] font-mono overflow-auto max-h-48 text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-950 p-2 rounded border border-gray-100 dark:border-gray-800">{{ diffData.diff }}</pre>
+
+                    <div class="bg-white dark:bg-gray-950 p-3 rounded border border-gray-100 dark:border-gray-800 overflow-auto max-h-64">
+                        <DiffViewer :data="diffData.visualDiff" />
+                    </div>
                 </div>
             </div>
 

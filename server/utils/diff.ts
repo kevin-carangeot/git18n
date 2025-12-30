@@ -11,23 +11,40 @@ export const calculateJsonDiff = (base: any, current: any): any => {
   const diff: any = {};
 
   for (const key in current) {
-    // 1. New Key: The key exists in Current but not in Base
     if (!Object.prototype.hasOwnProperty.call(base, key)) {
       diff[key] = current[key];
-    }
-    // 2. Both are Objects: Recursively check deeper
-    else if (typeof base[key] === 'object' && typeof current[key] === 'object') {
+    } else if (typeof base[key] === 'object' && typeof current[key] === 'object') {
       const nestedDiff = calculateJsonDiff(base[key], current[key]);
-      // Only add to result if there are actual differences inside
-      if (Object.keys(nestedDiff).length > 0) {
-        diff[key] = nestedDiff;
-      }
-    }
-    // 3. Value Changed: Key exists in both, but values differ
-    else if (base[key] !== current[key]) {
+      if (Object.keys(nestedDiff).length > 0) diff[key] = nestedDiff;
+    } else if (base[key] !== current[key]) {
       diff[key] = current[key];
     }
   }
 
+  return diff;
+};
+
+export const calculateDetailedDiff = (base: any, current: any): any => {
+  const diff: any = {};
+
+  for (const key in current) {
+    // CASE 1 : New key
+    if (!Object.prototype.hasOwnProperty.call(base, key)) {
+      diff[key] = { status: 'added', val: current[key] };
+    }
+    // CASE 2 : Folder
+    else if (typeof base[key] === 'object' && typeof current[key] === 'object') {
+      const nested = calculateDetailedDiff(base[key], current[key]);
+      if (Object.keys(nested).length > 0) diff[key] = nested;
+    }
+    // CASE 3 : Update key
+    else if (base[key] !== current[key]) {
+      diff[key] = {
+        status: 'modified',
+        old: base[key],
+        new: current[key]
+      };
+    }
+  }
   return diff;
 };
