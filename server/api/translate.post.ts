@@ -1,0 +1,32 @@
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { buildTranslationPrompt } from "~~/server/utils/prompt";
+
+export default defineEventHandler(async (event) => {
+  const config = useRuntimeConfig();
+  const body = await readBody(event);
+  const { content } = body;
+
+  if (!config.geminiApiKey) {
+    throw createError({ statusCode: 500, statusMessage: "Clé API manquante" });
+  }
+
+  const genAI = new GoogleGenerativeAI(config.geminiApiKey);
+
+  const model = genAI.getGenerativeModel({
+    model: "gemini-1.5-flash",
+    generationConfig: {
+      responseMimeType: "application/json",
+    },
+  });
+
+  const prompt = buildTranslationPrompt(content);
+
+  try {
+    const result = await model.generateContent(prompt);
+    const responseText = result.response.text();
+    return JSON.parse(responseText);
+  } catch (error) {
+    console.error("Erreur Gemini:", error);
+    throw createError({ statusCode: 502, statusMessage: "Erreur IA" });
+  }
+});

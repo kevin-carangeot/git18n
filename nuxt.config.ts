@@ -9,6 +9,7 @@ export default defineNuxtConfig({
 	devtools: { enabled: true },
 	runtimeConfig: {
 		githubToken: process.env.GITHUB_TOKEN,
+		geminiApiKey: process.env.GEMINI_API_KEY,
 		public: {
 			githubRepoUrl: process.env.GITHUB_REPO_URL,
 			githubTranslationFolder: process.env.GITHUB_TRANSLATION_FOLDER,
