@@ -1,4 +1,5 @@
-export const buildTranslationPrompt = (content: any) => {
+export const buildTranslationPrompt = (content: any, targetLangCode: string) => {
+  const languageName = new Intl.DisplayNames(['fr'], { type: 'language' }).of(targetLangCode);
   return `
     Contexte :
     - Tu traduis des fichiers JSON de i18n pour des contributeurs de modules/thèmes publiés sur la PrestaShop Marketplace.
@@ -8,6 +9,7 @@ export const buildTranslationPrompt = (content: any) => {
     - Tu dois rester cohérent avec les valeurs déjà existantes dans la langue cible (ex : ponctuation, capitalisation, apostrophes, accents).
     - Format de sortie : retourne uniquement du JSON valide, sans texte additionnel ni commentaires.
     - Paramétrage recommandé côté appel : température = 0, top_p = 1.
+    - La langue cible est : ${languageName}.
     Ton et style :
     - Toujours le vouvoiement.
     - Reste concis, clair, professionnel.
