@@ -42,7 +42,7 @@ L'outil se connecte directement à votre dépôt GitHub, récupère le fichier s
 
 ### 1. Cloner le projet
 ```bash
-git clone [https://github.com/kevin-carangeot/git18n](https://github.com/kevin-carangeot/git18n)
+git clone git@github.com:kevin-carangeot/git18n.git
 cd git18n
 ```
 
