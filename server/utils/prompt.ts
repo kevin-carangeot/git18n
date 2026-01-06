@@ -1,6 +1,9 @@
-export const buildTranslationPrompt = (content: any, targetLangCode: string) => {
-  const languageName = new Intl.DisplayNames(['fr'], { type: 'language' }).of(targetLangCode);
-  return `
+export const buildTranslationPrompt = (
+	content: Record<string, unknown>,
+	targetLangCode: string
+) => {
+	const languageName = new Intl.DisplayNames(['fr'], { type: 'language' }).of(targetLangCode)
+	return `
     Contexte :
     - Tu traduis des fichiers JSON de i18n pour des contributeurs de modules/thèmes publiés sur la PrestaShop Marketplace.
     - La langue source est 'en.json'. Les clés sont identiques dans toutes les langues. Ne crée ni ne supprime de clé.
@@ -69,5 +72,5 @@ export const buildTranslationPrompt = (content: any, targetLangCode: string) => 
 
     CONTENU À TRADUIRE (JSON) :
     ${JSON.stringify(content, null, 2)}
-  `;
-};
+  `
+}
