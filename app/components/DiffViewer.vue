@@ -37,7 +37,7 @@ const computeDiffHtml = (oldText: string, newText: string) => {
             <div v-else-if="value.status === 'modified'" class="pl-4 border-l-2 border-blue-400 bg-blue-50/50 dark:bg-blue-900/10 py-1">
                 <span class="text-blue-600 dark:text-blue-400">"{{ key }}"</span>:
                 <span class="text-gray-600 dark:text-gray-400">"</span>
-                <span v-html="computeDiffHtml(value.old, value.new)"></span>
+                <span v-html="computeDiffHtml(value.old, value.new)"/>
                 <span class="text-gray-600 dark:text-gray-400">",</span>
             </div>
 
