@@ -37,11 +37,12 @@ L'outil se connecte directement à votre dépôt GitHub, récupère le fichier s
 ### Prérequis
 * Node.js (v18+)
 * pnpm
-* Un **Token GitHub** (Classic ou Fine-grained) avec les droits d'accès au dépôt cible (voir section Configuration).
+* Un **Token GitHub** avec les droits d'accès au dépôt cible.
+* Une **clé API Gemini**
 
 ### 1. Cloner le projet
 ```bash
-git clone [https://github.com/votre-entreprise/git18n.git](https://github.com/votre-entreprise/git18n.git)
+git clone [https://github.com/kevin-carangeot/git18n](https://github.com/kevin-carangeot/git18n)
 cd git18n
 ```
 
