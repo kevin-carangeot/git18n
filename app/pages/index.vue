@@ -72,39 +72,45 @@ watch(selectedPull, async (newBranch) => {
 
 // --- ACTION: Start Translation (AI Generation) ---
 const startTranslation = async () => {
+    // Safety check
     if (!diffData.value || diffData.value?.count === 0) return;
 
     isTranslating.value = true;
     const languages = (config.public.targetLanguages || []) as string[];
 
-    // Initialize state
+    // Initialize loading state
     languages.forEach(lang => {
         loadingStatus.value[lang] = true;
         editableTranslations.value[lang] = '';
     });
 
     try {
+        // We use the raw diff structure, not the visual one
+        const contentToTranslate = diffData.value.diff;
+
         for (const lang of languages) {
-            // Simulation delay for UI effect
-            if (languages.indexOf(lang) > 0) await new Promise(r => setTimeout(r, 500));
-
-            // TODO: Call your real /api/translate here.
-            // For now, using MOCK data based on the structure.
-
-            let fakeResult = {};
-            if (lang === 'fr') {
-                fakeResult = { "COMMON": { "NEW_KEY": "Ceci est une nouvelle traduction" } };
-            } else {
-                fakeResult = { "COMMON": { "NEW_KEY": `Translation for ${lang}` } };
+            // Small delay between requests to be safe with Free Tier
+            if (languages.indexOf(lang) > 0) {
+                await new Promise(resolve => setTimeout(resolve, 500));
             }
 
-            // Fill the textarea
-            editableTranslations.value[lang] = JSON.stringify(fakeResult, null, 4);
+            const translatedJson = await $fetch<any>('/api/translate', {
+                method: 'POST',
+                body: {
+                    content: contentToTranslate,
+                    targetLang: lang
+                }
+            });
+
+            // Update UI
+            editableTranslations.value[lang] = JSON.stringify(translatedJson, null, 4);
             loadingStatus.value[lang] = false;
         }
+
         toast.add({ title: 'Success', description: 'All translations generated!', color: 'green' });
 
     } catch (error) {
+        console.error(error);
         toast.add({ title: 'Error', description: 'Translation failed', color: 'red' });
     } finally {
         isTranslating.value = false;
@@ -207,11 +213,13 @@ const copyToClipboard = (content: string) => {
                         </div>
                         <div class="flex flex-col min-w-0">
                             <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Repository</span>
-                            <span class="font-mono text-sm font-medium text-primary-500 truncate">
-                                {{ config.public.githubRepoUrl?.replace('https://github.com/', '') }}
-                            </span>
+                            <a :href="config.public.githubRepoUrl" target="_blank"
+                               class="font-mono text-sm font-medium text-primary-500 hover:text-primary-600 truncate transition-colors">
+                                {{ config.public.githubRepoUrl ? config.public.githubRepoUrl.replace('https://github.com/', '') : 'Not configured' }}
+                            </a>
                         </div>
                     </div>
+                    <UButton :to="config.public.githubRepoUrl" target="_blank" icon="i-heroicons-arrow-top-right-on-square" size="xs" color="neutral" variant="ghost" />
                 </div>
                 <USeparator />
                 <div class="p-4 flex items-center gap-3 min-w-0">

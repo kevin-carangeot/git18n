@@ -1,5 +1,5 @@
-import { deepMerge } from "~~/server/utils/merge";
 import { detectIndentation } from "~~/server/utils/indent";
+import { merge } from "~~/server/utils/merge";
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig();
@@ -17,6 +17,7 @@ export default defineEventHandler(async (event) => {
 
   const newBranchName = `feat/i18n-update-${Date.now()}`;
   const apiBase = `https://api.github.com/repos/${owner}/${repo}`;
+  const cleanFolder = folderPath ? folderPath.replace(/\/$/, '') : 'locales';
 
   try {
     // 1. Get base SHA
@@ -32,7 +33,6 @@ export default defineEventHandler(async (event) => {
 
     // 3. Process files
     for (const [lang, newContent] of Object.entries(translations)) {
-      const cleanFolder = folderPath ? folderPath.replace(/\/$/, '') : 'locales';
       const filePath = `${cleanFolder}/${lang}.json`;
 
       let currentContentObj = {};
@@ -50,10 +50,10 @@ export default defineEventHandler(async (event) => {
         currentContentObj = JSON.parse(rawContent);
         fileSha = fileData.sha;
       } catch (e) {
-        // File is new
+        // File does not exist
       }
 
-      const finalJson = deepMerge(currentContentObj, newContent);
+      const finalJson = merge(currentContentObj, newContent);
       const jsonString = JSON.stringify(finalJson, null, indentation) + '\n';
       const encodedContent = Buffer.from(jsonString).toString('base64');
 

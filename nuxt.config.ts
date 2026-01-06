@@ -1,5 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+	app: {
+		head: {
+			title: 'Git18n',
+			charset: 'utf-8',
+			viewport: 'width=device-width, initial-scale=1',
+		}
+	},
 	modules: [
 		'@nuxt/ui',
 		'@nuxt/eslint'
