@@ -1,10 +1,12 @@
 <script setup lang="ts">
 const config = useRuntimeConfig()
+const { config: gitConfig } = useGitConfig()
+const { $api } = useNuxtApp()
 const toast = useToast()
 
 // --- STATE ---
 const selectedPull = ref('')
-const { data: pulls, pending: pendingPulls } = await useFetch('/api/pulls')
+const { data: pulls, pending: pendingPulls } = await useFetch('/api/pulls', { $fetch: $api })
 
 const diffData = ref<{
 	diff: Record<string, unknown>
@@ -39,9 +41,9 @@ watch(selectedPull, async (newBranch) => {
 	resetView()
 
 	try {
-		const folder = config.public.githubTranslationFolder
+		const folder = gitConfig.value.translationFolder
 		const filePath = folder.endsWith('/') ? `${folder}en.json` : `${folder}/en.json`
-		diffData.value = await $fetch('/api/pr-diff', {
+		diffData.value = await $api('/api/pr-diff', {
 			query: { branch: newBranch, path: filePath },
 		})
 	} catch (err: unknown) {
@@ -66,7 +68,7 @@ const startTranslation = async () => {
 		const contentToTranslate = diffData.value.diff
 		for (const lang of languages) {
 			if (languages.indexOf(lang) > 0) await new Promise((r) => setTimeout(r, 500))
-			const translatedJson = await $fetch<Record<string, unknown>>('/api/translate', {
+			const translatedJson = await $api<Record<string, unknown>>('/api/translate', {
 				method: 'POST',
 				body: { content: contentToTranslate, targetLang: lang },
 			})
@@ -90,13 +92,6 @@ const createPullRequest = async () => {
 	isCreatingPR.value = true
 	const translationsPayload: Record<string, unknown> = {}
 
-	const getRepoInfo = () => {
-		const url = config.public.githubRepoUrl as string
-		const match = url.match(/github\.com\/([^/]+)\/([^/]+)/)
-		if (!match) return { owner: '', repo: '' }
-		return { owner: match[1], repo: match[2].replace('.git', '') }
-	}
-
 	try {
 		for (const [lang, contentStr] of Object.entries(editableTranslations.value)) {
 			if (!contentStr.trim()) continue
@@ -111,14 +106,10 @@ const createPullRequest = async () => {
 		if (Object.keys(translationsPayload).length === 0)
 			throw new Error('No translations to save.')
 
-		const { owner, repo } = getRepoInfo()
-		const response = await $fetch('/api/create-pr', {
+		const response = await $api('/api/create-pr', {
 			method: 'POST',
 			body: {
-				owner,
-				repo,
 				baseBranch: diffData.value?.baseBranch || 'main',
-				folderPath: config.public.githubTranslationFolder,
 				translations: translationsPayload,
 			},
 		})
@@ -190,7 +181,7 @@ const resetView = () => {
 
 			<ConfigSelector
 				v-model="selectedPull"
-				:repo-url="config.public.githubRepoUrl"
+				:repo-url="gitConfig.repoUrl"
 				:pulls="pulls"
 				:pending="pendingPulls"
 			/>
