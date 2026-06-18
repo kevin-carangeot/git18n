@@ -14,7 +14,7 @@
 		"badge": "AI translation",
 		"titleLine1": "Translate every PR",
 		"titleLine2": "in a single click.",
-		"subtitle": "Your i18n JSON, AI-translated into {count} languages. All you do is merge.",
+		"subtitle": "Your i18n keys are translated by AI into {count} languages, then a pull request is opened for you.",
 		"reviewTitle": "Review & edit",
 		"editorMode": "Editor mode"
 	},
