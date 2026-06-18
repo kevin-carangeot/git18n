@@ -146,21 +146,15 @@ const resetView = () => {
 </script>
 
 <template>
-	<UContainer class="max-w-[920px] py-14">
-		<div class="mb-10 flex items-center justify-between">
+	<UContainer class="max-w-[920px] pt-10 pb-14">
+		<div v-if="hasResults" class="mb-10 flex items-center justify-between">
 			<div class="flex items-center gap-2">
-				<h2
-					v-if="hasResults"
-					class="text-xl font-semibold tracking-tight text-slate-900 dark:text-white"
-				>
+				<h2 class="text-xl font-semibold tracking-tight text-slate-900 dark:text-white">
 					Review &amp; edit
 				</h2>
-				<UBadge v-if="hasResults" color="primary" variant="subtle" size="xs"
-					>Editor mode</UBadge
-				>
+				<UBadge color="primary" variant="subtle" size="xs">Editor mode</UBadge>
 			</div>
 			<UButton
-				v-if="hasResults"
 				icon="i-heroicons-arrow-left"
 				color="neutral"
 				variant="ghost"
@@ -170,7 +164,7 @@ const resetView = () => {
 		</div>
 
 		<div v-if="!hasResults" class="animate-fade-in space-y-7">
-			<div class="mb-2 text-center">
+			<div class="mb-5 text-center">
 				<span
 					class="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-400"
 				>
@@ -180,9 +174,9 @@ const resetView = () => {
 				<h1
 					class="text-4xl font-bold leading-[1.08] tracking-tight text-slate-900 dark:text-white"
 				>
-					Traduisez chaque PR<br />
+					Traduisez chaque PR
 					<span
-						class="bg-gradient-to-r from-emerald-600 to-emerald-700 bg-clip-text text-transparent"
+						class="block bg-linear-to-r from-emerald-600 to-emerald-700 bg-clip-text text-transparent"
 					>
 						en un seul clic.
 					</span>
