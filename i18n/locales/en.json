@@ -19,8 +19,7 @@
 		"editorMode": "Editor mode"
 	},
 	"settings": {
-		"title": "Configuration",
-		"subtitle": "Your credentials stay in this browser and are only sent to the server for the duration of each request."
+		"title": "Configuration"
 	},
 	"configForm": {
 		"sectionLabel": "Configuration",

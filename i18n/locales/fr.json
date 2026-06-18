@@ -19,8 +19,7 @@
 		"editorMode": "Mode éditeur"
 	},
 	"settings": {
-		"title": "Configuration",
-		"subtitle": "Vos identifiants restent dans ce navigateur et sont envoyés au serveur uniquement le temps de chaque requête."
+		"title": "Configuration"
 	},
 	"configForm": {
 		"sectionLabel": "Configuration",
