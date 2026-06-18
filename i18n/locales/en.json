@@ -1,0 +1,76 @@
+{
+	"common": {
+		"settings": "Settings",
+		"save": "Save",
+		"reset": "Reset",
+		"copy": "Copy",
+		"backToConfig": "Back to config",
+		"language": "Language"
+	},
+	"header": {
+		"settingsAria": "Settings"
+	},
+	"home": {
+		"badge": "Localization engine",
+		"titleLine1": "Translate every PR",
+		"titleLine2": "in a single click.",
+		"subtitle": "git18n detects missing keys, translates them with AI into {count} languages and opens the Pull Request for you.",
+		"reviewTitle": "Review & edit",
+		"editorMode": "Editor mode"
+	},
+	"settings": {
+		"title": "Configuration",
+		"subtitle": "Your credentials stay in this browser (localStorage) and are only sent to the server for the duration of each request."
+	},
+	"configForm": {
+		"sectionLabel": "Configuration",
+		"sectionHint": "Connect your repository before starting",
+		"credentialsNote": "Your credentials stay in this browser (localStorage) and are only sent to the server for the duration of each request.",
+		"repoUrlLabel": "GitHub repository URL",
+		"folderLabel": "Translation folder",
+		"githubTokenLabel": "GitHub token",
+		"geminiKeyLabel": "Gemini API key",
+		"savedTitle": "Saved",
+		"savedDescription": "Configuration stored locally.",
+		"resetTitle": "Reset",
+		"resetDescription": "Configuration cleared."
+	},
+	"configSelector": {
+		"notConfigured": "Not configured",
+		"repository": "Repository",
+		"sourcePr": "Source pull request",
+		"selectPlaceholder": "Select a PR to analyze..."
+	},
+	"diffReview": {
+		"analysing": "Analysing translation keys...",
+		"noKeysTitle": "No new keys",
+		"noKeysDescription": "This PR doesn't introduce any new keys in the source file.",
+		"missingKeys": "Missing keys detected",
+		"keysBadge": "+{count} keys",
+		"generate": "Generate translations · {count} languages"
+	},
+	"translationEditor": {
+		"base": "Base:",
+		"addingKeys": "Adding +{count} keys to {files} files",
+		"generating": "Generating {lang}...",
+		"validJson": "Valid JSON required",
+		"copied": "Copied!"
+	},
+	"prAction": {
+		"title": "Ready to merge?",
+		"description": "This will commit all changes to a new branch and open a PR.",
+		"create": "Create Pull Request"
+	},
+	"toast": {
+		"errorTitle": "Error",
+		"fetchDiffFailed": "Failed to fetch diff",
+		"successTitle": "Success",
+		"translationsGenerated": "All translations generated!",
+		"translationFailed": "Translation failed",
+		"invalidJson": "Invalid JSON in {lang} tab.",
+		"noTranslations": "No translations to save.",
+		"prCreatedTitle": "PR Created!",
+		"failedTitle": "Failed",
+		"unknownError": "Unknown error"
+	}
+}

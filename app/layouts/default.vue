@@ -1,6 +1,10 @@
 <script setup lang="ts">
+const { locale, setLocale, t } = useI18n()
+
 const repoUrl = 'https://github.com/kevin-carangeot/git18n'
 const repoDisplay = repoUrl.replace('https://github.com/', '')
+
+const toggleLocale = () => setLocale(locale.value === 'fr' ? 'en' : 'fr')
 </script>
 
 <template>
@@ -37,11 +41,21 @@ const repoDisplay = repoUrl.replace('https://github.com/', '')
 						{{ repoDisplay }}
 					</a>
 					<UButton
+						color="neutral"
+						variant="ghost"
+						size="xs"
+						class="cursor-pointer font-mono font-semibold"
+						:aria-label="t('common.language')"
+						@click="toggleLocale"
+					>
+						{{ locale.toUpperCase() }}
+					</UButton>
+					<UButton
 						to="/settings"
 						icon="i-heroicons-cog-6-tooth"
 						color="neutral"
 						variant="ghost"
-						aria-label="Settings"
+						:aria-label="t('common.settings')"
 					/>
 				</div>
 			</div>

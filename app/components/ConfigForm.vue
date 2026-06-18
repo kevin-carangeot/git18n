@@ -5,6 +5,7 @@ const emit = defineEmits<{ saved: [] }>()
 
 const { config, save, reset } = useGitConfig()
 const toast = useToast()
+const { t } = useI18n()
 
 const form = reactive<GitConfig>({ ...EMPTY_CONFIG, ...config.value })
 
@@ -20,14 +21,22 @@ const canSave = computed(
 const onSave = () => {
 	if (!canSave.value) return
 	save({ ...form })
-	toast.add({ title: 'Saved', description: 'Configuration stored locally.', color: 'success' })
+	toast.add({
+		title: t('configForm.savedTitle'),
+		description: t('configForm.savedDescription'),
+		color: 'success',
+	})
 	emit('saved')
 }
 
 const onReset = () => {
 	reset()
 	Object.assign(form, EMPTY_CONFIG)
-	toast.add({ title: 'Reset', description: 'Configuration cleared.', color: 'neutral' })
+	toast.add({
+		title: t('configForm.resetTitle'),
+		description: t('configForm.resetDescription'),
+		color: 'neutral',
+	})
 }
 </script>
 
@@ -43,10 +52,10 @@ const onReset = () => {
 			</div>
 			<div class="flex min-w-0 flex-1 flex-col gap-0.5">
 				<span class="text-[10.5px] font-bold uppercase tracking-[0.08em] text-slate-400">
-					Configuration
+					{{ t('configForm.sectionLabel') }}
 				</span>
 				<span class="text-[13.5px] font-medium text-slate-700 dark:text-slate-200">
-					Connectez votre dépôt avant de commencer
+					{{ t('configForm.sectionHint') }}
 				</span>
 			</div>
 		</div>
@@ -55,11 +64,10 @@ const onReset = () => {
 
 		<div class="space-y-4 p-5">
 			<p class="text-xs text-slate-500 dark:text-slate-400">
-				Vos identifiants restent dans ce navigateur (localStorage) et ne sont envoyés au serveur
-				que le temps de chaque requête.
+				{{ t('configForm.credentialsNote') }}
 			</p>
 
-			<UFormField label="GitHub repository URL" required>
+			<UFormField :label="t('configForm.repoUrlLabel')" required>
 				<UInput
 					v-model="form.repoUrl"
 					placeholder="https://github.com/owner/repo"
@@ -68,7 +76,7 @@ const onReset = () => {
 				/>
 			</UFormField>
 
-			<UFormField label="Translation folder" required>
+			<UFormField :label="t('configForm.folderLabel')" required>
 				<UInput
 					v-model="form.translationFolder"
 					placeholder="ui/src/lang/json/"
@@ -76,17 +84,22 @@ const onReset = () => {
 				/>
 			</UFormField>
 
-			<UFormField label="GitHub token" required>
+			<UFormField :label="t('configForm.githubTokenLabel')" required>
 				<UInput v-model="form.githubToken" placeholder="ghp_…" class="w-full" />
 			</UFormField>
 
-			<UFormField label="Gemini API key" required>
+			<UFormField :label="t('configForm.geminiKeyLabel')" required>
 				<UInput v-model="form.geminiApiKey" placeholder="AIza…" class="w-full" />
 			</UFormField>
 
 			<div class="flex items-center gap-3 pt-1">
-				<UButton label="Save" :disabled="!canSave" @click="onSave" />
-				<UButton label="Reset" color="neutral" variant="ghost" @click="onReset" />
+				<UButton :label="t('common.save')" :disabled="!canSave" @click="onSave" />
+				<UButton
+					:label="t('common.reset')"
+					color="neutral"
+					variant="ghost"
+					@click="onReset"
+				/>
 			</div>
 		</div>
 	</div>

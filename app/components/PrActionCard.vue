@@ -3,6 +3,7 @@ defineProps<{
 	loading: boolean
 }>()
 const emit = defineEmits(['create'])
+const { t } = useI18n()
 </script>
 
 <template>
@@ -17,10 +18,10 @@ const emit = defineEmits(['create'])
 			</div>
 			<div>
 				<h3 class="text-lg font-semibold text-slate-900 dark:text-white">
-					Ready to merge?
+					{{ t('prAction.title') }}
 				</h3>
 				<p class="text-sm text-slate-500 dark:text-slate-400">
-					This will commit all changes to a new branch and open a PR.
+					{{ t('prAction.description') }}
 				</p>
 			</div>
 		</div>
@@ -34,7 +35,7 @@ const emit = defineEmits(['create'])
 			class="g-shadow-lg cursor-pointer bg-linear-to-r from-emerald-500 to-emerald-700"
 			@click="emit('create')"
 		>
-			Create Pull Request
+			{{ t('prAction.create') }}
 		</UButton>
 	</div>
 </template>
