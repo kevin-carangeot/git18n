@@ -7,15 +7,19 @@ const emit = defineEmits(['create'])
 
 <template>
 	<div
-		class="mt-8 p-6 bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm flex items-center justify-between"
+		class="g-shadow-md mt-8 flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-6 dark:border-white/10 dark:bg-slate-900"
 	>
 		<div class="flex items-center gap-4">
-			<div class="p-3 bg-primary-50 dark:bg-primary-900/20 rounded-full text-primary-500">
-				<UIcon name="i-heroicons-rocket-launch" class="w-6 h-6" />
+			<div
+				class="grid size-12 place-items-center rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10"
+			>
+				<UIcon name="i-heroicons-rocket-launch" class="size-6" />
 			</div>
 			<div>
-				<h3 class="font-bold text-gray-900 dark:text-white text-lg">Ready to merge?</h3>
-				<p class="text-sm text-gray-500 dark:text-gray-400">
+				<h3 class="text-lg font-semibold text-slate-900 dark:text-white">
+					Ready to merge?
+				</h3>
+				<p class="text-sm text-slate-500 dark:text-slate-400">
 					This will commit all changes to a new branch and open a PR.
 				</p>
 			</div>
@@ -27,7 +31,7 @@ const emit = defineEmits(['create'])
 			variant="solid"
 			:loading="loading"
 			icon="i-octicon-git-pull-request-24"
-			class="shadow-md cursor-pointer"
+			class="g-shadow-lg cursor-pointer bg-linear-to-r from-emerald-500 to-emerald-700"
 			@click="emit('create')"
 		>
 			Create Pull Request
