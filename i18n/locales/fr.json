@@ -11,7 +11,7 @@
 		"settingsAria": "Paramètres"
 	},
 	"home": {
-		"badge": "Moteur de localisation",
+		"badge": "Traduction par IA",
 		"titleLine1": "Traduisez chaque PR",
 		"titleLine2": "en un seul clic.",
 		"subtitle": "git18n détecte les clés manquantes, les traduit par IA dans {count} langues et ouvre la Pull Request pour vous.",
