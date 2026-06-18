@@ -14,7 +14,7 @@
 		"badge": "AI translation",
 		"titleLine1": "Translate every PR",
 		"titleLine2": "in a single click.",
-		"subtitle": "git18n detects missing i18n keys in your JSON files, translates them with AI into {count} languages and opens the Pull Request for you.",
+		"subtitle": "Missing i18n keys from your JSON files, translated by AI into {count} languages, shipped as a PR.",
 		"reviewTitle": "Review & edit",
 		"editorMode": "Editor mode"
 	},
