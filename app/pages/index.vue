@@ -1,12 +1,21 @@
 <script setup lang="ts">
 const config = useRuntimeConfig()
-const { config: gitConfig } = useGitConfig()
+const { config: gitConfig, isConfigured } = useGitConfig()
 const { $api } = useNuxtApp()
 const toast = useToast()
 
 // --- STATE ---
 const selectedPull = ref('')
-const { data: pulls, pending: pendingPulls } = await useFetch('/api/pulls', { $fetch: $api })
+const {
+	data: pulls,
+	pending: pendingPulls,
+	refresh: refreshPulls,
+} = await useFetch('/api/pulls', { $fetch: $api, immediate: isConfigured.value })
+
+// Load pull requests as soon as the user finishes configuring.
+watch(isConfigured, (configured) => {
+	if (configured) refreshPulls()
+})
 
 const diffData = ref<{
 	diff: Record<string, unknown>
@@ -179,20 +188,24 @@ const resetView = () => {
 				</p>
 			</div>
 
-			<ConfigSelector
-				v-model="selectedPull"
-				:repo-url="gitConfig.repoUrl"
-				:pulls="pulls"
-				:pending="pendingPulls"
-			/>
+			<ConfigForm v-if="!isConfigured" />
 
-			<DiffReview
-				:diff-data="diffData"
-				:fetching="fetchingDiff"
-				:is-translating="isTranslating"
-				:target-langs-count="config.public.targetLanguages.length"
-				@start-translation="startTranslation"
-			/>
+			<template v-else>
+				<ConfigSelector
+					v-model="selectedPull"
+					:repo-url="gitConfig.repoUrl"
+					:pulls="pulls"
+					:pending="pendingPulls"
+				/>
+
+				<DiffReview
+					:diff-data="diffData"
+					:fetching="fetchingDiff"
+					:is-translating="isTranslating"
+					:target-langs-count="config.public.targetLanguages.length"
+					@start-translation="startTranslation"
+				/>
+			</template>
 		</div>
 
 		<div v-else class="animate-fade-in space-y-4">
