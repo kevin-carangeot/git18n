@@ -3,6 +3,7 @@ const config = useRuntimeConfig()
 const { config: gitConfig, isConfigured } = useGitConfig()
 const { $api } = useNuxtApp()
 const toast = useToast()
+const { t } = useI18n()
 
 // --- STATE ---
 const selectedPull = ref('')
@@ -57,7 +58,11 @@ watch(selectedPull, async (newBranch) => {
 		})
 	} catch (err: unknown) {
 		console.error(err)
-		toast.add({ title: 'Error', description: 'Failed to fetch diff', color: 'error' })
+		toast.add({
+			title: t('toast.errorTitle'),
+			description: t('toast.fetchDiffFailed'),
+			color: 'error',
+		})
 	} finally {
 		fetchingDiff.value = false
 	}
@@ -85,13 +90,17 @@ const startTranslation = async () => {
 			loadingStatus.value[lang] = false
 		}
 		toast.add({
-			title: 'Success',
-			description: 'All translations generated!',
+			title: t('toast.successTitle'),
+			description: t('toast.translationsGenerated'),
 			color: 'success',
 		})
 	} catch (err: unknown) {
 		console.error(err)
-		toast.add({ title: 'Error', description: 'Translation failed', color: 'error' })
+		toast.add({
+			title: t('toast.errorTitle'),
+			description: t('toast.translationFailed'),
+			color: 'error',
+		})
 	} finally {
 		isTranslating.value = false
 	}
@@ -108,12 +117,12 @@ const createPullRequest = async () => {
 				translationsPayload[lang] = JSON.parse(contentStr)
 			} catch (err: unknown) {
 				console.error(err)
-				throw new Error(`Invalid JSON in ${lang.toUpperCase()} tab.`)
+				throw new Error(t('toast.invalidJson', { lang: lang.toUpperCase() }))
 			}
 		}
 
 		if (Object.keys(translationsPayload).length === 0)
-			throw new Error('No translations to save.')
+			throw new Error(t('toast.noTranslations'))
 
 		const response = await $api('/api/create-pr', {
 			method: 'POST',
@@ -124,7 +133,7 @@ const createPullRequest = async () => {
 		})
 
 		toast.add({
-			title: 'PR Created!',
+			title: t('toast.prCreatedTitle'),
 			color: 'success',
 			icon: 'i-heroicons-check-badge',
 			timeout: 5000,
@@ -132,8 +141,8 @@ const createPullRequest = async () => {
 		})
 		window.open(response.url, '_blank')
 	} catch (err: unknown) {
-		const message = err instanceof Error ? err.message : 'Unknown error'
-		toast.add({ title: 'Failed', description: message, color: 'error' })
+		const message = err instanceof Error ? err.message : t('toast.unknownError')
+		toast.add({ title: t('toast.failedTitle'), description: message, color: 'error' })
 	} finally {
 		isCreatingPR.value = false
 	}
@@ -150,15 +159,17 @@ const resetView = () => {
 		<div v-if="hasResults" class="mb-10 flex items-center justify-between">
 			<div class="flex items-center gap-2">
 				<h2 class="text-xl font-semibold tracking-tight text-slate-900 dark:text-white">
-					Review &amp; edit
+					{{ t('home.reviewTitle') }}
 				</h2>
-				<UBadge color="primary" variant="subtle" size="xs">Editor mode</UBadge>
+				<UBadge color="primary" variant="subtle" size="xs">{{
+					t('home.editorMode')
+				}}</UBadge>
 			</div>
 			<UButton
 				icon="i-heroicons-arrow-left"
 				color="neutral"
 				variant="ghost"
-				label="Back to config"
+				:label="t('common.backToConfig')"
 				@click="resetView"
 			/>
 		</div>
@@ -169,22 +180,20 @@ const resetView = () => {
 					class="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-400"
 				>
 					<span class="size-1.5 rounded-full bg-emerald-500 ring-3 ring-emerald-500/20" />
-					Localization engine
+					{{ t('home.badge') }}
 				</span>
 				<h1
 					class="text-4xl font-bold leading-[1.08] tracking-tight text-slate-900 dark:text-white"
 				>
-					Traduisez chaque PR
+					{{ t('home.titleLine1') }}
 					<span
 						class="block bg-linear-to-r from-emerald-600 to-emerald-700 bg-clip-text text-transparent"
 					>
-						en un seul clic.
+						{{ t('home.titleLine2') }}
 					</span>
 				</h1>
 				<p class="mx-auto mt-3 max-w-md text-base text-slate-500 dark:text-slate-400">
-					git18n détecte les clés manquantes, les traduit par IA dans
-					{{ config.public.targetLanguages.length }} langues et ouvre la Pull Request pour
-					vous.
+					{{ t('home.subtitle', { count: config.public.targetLanguages.length }) }}
 				</p>
 			</div>
 

@@ -1,6 +1,14 @@
 <script setup lang="ts">
+const { locale, setLocale, locales, t } = useI18n()
+
 const repoUrl = 'https://github.com/kevin-carangeot/git18n'
 const repoDisplay = repoUrl.replace('https://github.com/', '')
+
+const toggleLocale = () => {
+	const codes = locales.value.map((l) => l.code)
+	const next = codes[(codes.indexOf(locale.value) + 1) % codes.length]
+	if (next) setLocale(next)
+}
 </script>
 
 <template>
@@ -36,12 +44,31 @@ const repoDisplay = repoUrl.replace('https://github.com/', '')
 						<UIcon name="i-simple-icons-github" class="size-3.5" />
 						{{ repoDisplay }}
 					</a>
+					<button
+						type="button"
+						:aria-label="t('common.language')"
+						class="flex cursor-pointer items-center gap-0.5 rounded-[9px] border border-slate-200 bg-white p-0.5 transition hover:border-slate-300 dark:border-white/10 dark:bg-white/5 dark:hover:border-white/20"
+						@click="toggleLocale"
+					>
+						<span
+							v-for="loc in locales"
+							:key="loc.code"
+							class="rounded-[7px] px-2 py-1 text-xs font-semibold uppercase tracking-wide transition"
+							:class="
+								locale === loc.code
+									? 'bg-emerald-600 text-white shadow-sm'
+									: 'text-slate-400'
+							"
+						>
+							{{ loc.code }}
+						</span>
+					</button>
 					<UButton
 						to="/settings"
 						icon="i-heroicons-cog-6-tooth"
 						color="neutral"
 						variant="ghost"
-						aria-label="Settings"
+						:aria-label="t('common.settings')"
 					/>
 				</div>
 			</div>

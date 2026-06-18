@@ -9,6 +9,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['update:modelValue'])
 const toast = useToast()
+const { t } = useI18n()
 
 const updateTranslation = (lang: string, value: string) => {
 	const newValue = { ...props.modelValue, [lang]: value }
@@ -17,7 +18,11 @@ const updateTranslation = (lang: string, value: string) => {
 
 const copyToClipboard = (content: string) => {
 	navigator.clipboard.writeText(content)
-	toast.add({ title: 'Copied!', icon: 'i-heroicons-clipboard-document-check', timeout: 2000 })
+	toast.add({
+		title: t('translationEditor.copied'),
+		icon: 'i-heroicons-clipboard-document-check',
+		timeout: 2000,
+	})
 }
 </script>
 
@@ -28,13 +33,18 @@ const copyToClipboard = (content: string) => {
 		>
 			<div class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
 				<UIcon name="i-octicon-git-branch-24" class="text-emerald-600" />
-				<span class="font-medium">Base:</span>
+				<span class="font-medium">{{ t('translationEditor.base') }}</span>
 				<span class="rounded bg-white px-2 py-0.5 font-mono text-xs dark:bg-black/20">{{
 					baseBranch
 				}}</span>
 			</div>
 			<div class="font-mono text-xs text-slate-400">
-				Adding +{{ diffCount }} keys to {{ Object.keys(modelValue).length }} files
+				{{
+					t('translationEditor.addingKeys', {
+						count: diffCount,
+						files: Object.keys(modelValue).length,
+					})
+				}}
 			</div>
 		</div>
 
@@ -63,7 +73,7 @@ const copyToClipboard = (content: string) => {
 						</div>
 						<span class="flex items-center gap-2 text-sm font-medium text-slate-500">
 							<UIcon name="i-heroicons-sparkles" class="size-4 text-emerald-500" />
-							Generating {{ item.label }}...
+							{{ t('translationEditor.generating', { lang: item.label }) }}
 						</span>
 					</div>
 
@@ -83,14 +93,14 @@ const copyToClipboard = (content: string) => {
 						>
 							<span class="flex items-center gap-1 text-[10px] text-slate-400">
 								<UIcon name="i-heroicons-check-circle" class="text-emerald-500" />
-								Valid JSON required
+								{{ t('translationEditor.validJson') }}
 							</span>
 							<UButton
 								size="xs"
 								color="neutral"
 								variant="ghost"
 								icon="i-heroicons-clipboard-document"
-								label="Copy"
+								:label="t('common.copy')"
 								@click="copyToClipboard(modelValue[item.code])"
 							/>
 						</div>
