@@ -1,23 +1,20 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { buildTranslationPrompt } from '~~/server/utils/prompt'
+import { getGitConfig } from '~~/server/utils/git-config'
 
 export default defineEventHandler(async (event) => {
-	const config = useRuntimeConfig()
+	const { geminiApiKey } = getGitConfig(event, { github: false, gemini: true })
 	const body = await readBody(event)
 	const { content, targetLang } = body
 
-	if (!config.geminiApiKey)
-		throw createError({ statusCode: 500, statusMessage: 'Missing API key' })
 	if (!content || !targetLang)
 		throw createError({ statusCode: 400, statusMessage: 'Missing content or targetLang' })
 
-	const genAI = new GoogleGenerativeAI(config.geminiApiKey)
+	const genAI = new GoogleGenerativeAI(geminiApiKey)
 
 	const model = genAI.getGenerativeModel({
 		model: 'gemini-2.5-flash-lite',
-		generationConfig: {
-			responseMimeType: 'application/json',
-		},
+		generationConfig: { responseMimeType: 'application/json' },
 	})
 
 	const prompt = buildTranslationPrompt(content, targetLang)

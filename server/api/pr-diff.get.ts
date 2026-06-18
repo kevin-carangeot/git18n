@@ -1,4 +1,5 @@
 import { calculateJsonDiff, calculateDetailedDiff } from '~~/server/utils/diff'
+import { getGitConfig } from '~~/server/utils/git-config'
 
 // 👇 HELPER FUNCTION: Recursively counts only the final values (leaves)
 // It ignores objects/folders and counts actual strings/numbers
@@ -23,7 +24,7 @@ const countLeafNodes = (obj: Record<string, unknown>): number => {
 }
 
 export default defineEventHandler(async (event) => {
-	const config = useRuntimeConfig()
+	const { owner, repo, token } = getGitConfig(event)
 	const query = getQuery(event)
 
 	const branchName = query.branch as string
@@ -32,14 +33,8 @@ export default defineEventHandler(async (event) => {
 	if (!branchName || !filePath)
 		throw createError({ statusCode: 400, statusMessage: 'Missing parameters' })
 
-	// Extract owner/repo
-	const repoUrl = config.public.githubRepoUrl
-	const match = repoUrl.match(/github\.com\/([^/]+)\/([^/]+)/)
-	if (!match) throw createError({ statusCode: 500, statusMessage: 'Invalid Repo Config' })
-	const [, owner, repo] = match
-
 	const headers = {
-		Authorization: `Bearer ${config.githubToken}`,
+		Authorization: `Bearer ${token}`,
 		'X-GitHub-Api-Version': '2022-11-28',
 		Accept: 'application/vnd.github.raw',
 	}
@@ -66,7 +61,7 @@ export default defineEventHandler(async (event) => {
 		const repoInfo = await $fetch<{ default_branch: string }>(
 			`https://api.github.com/repos/${owner}/${repo}`,
 			{
-				headers: { Authorization: `Bearer ${config.githubToken}` },
+				headers: { Authorization: `Bearer ${token}` },
 			}
 		)
 		const baseBranch = repoInfo.default_branch

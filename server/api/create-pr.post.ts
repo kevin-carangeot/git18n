@@ -1,16 +1,16 @@
 import { detectIndentation } from '~~/server/utils/indent'
 import { merge } from '~~/server/utils/merge'
+import { getGitConfig } from '~~/server/utils/git-config'
 
 export default defineEventHandler(async (event) => {
-	const config = useRuntimeConfig()
+	const { owner, repo, token, folder } = getGitConfig(event)
 	const body = await readBody(event)
-	const { translations, owner, repo, baseBranch, folderPath } = body
+	const { translations, baseBranch } = body
 
-	if (!translations || !owner || !repo)
-		throw createError({ statusCode: 400, statusMessage: 'Missing parameters' })
+	if (!translations) throw createError({ statusCode: 400, statusMessage: 'Missing parameters' })
 
 	const headers = {
-		Authorization: `Bearer ${config.githubToken}`,
+		Authorization: `Bearer ${token}`,
 		'X-GitHub-Api-Version': '2022-11-28',
 		Accept: 'application/vnd.github.v3+json',
 		'User-Agent': 'Nuxt-i18n-App',
@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
 
 	const newBranchName = `feat/i18n-update-${Date.now()}`
 	const apiBase = `https://api.github.com/repos/${owner}/${repo}`
-	const cleanFolder = folderPath ? folderPath.replace(/\/$/, '') : 'locales'
+	const cleanFolder = folder ? folder.replace(/\/$/, '') : 'locales'
 
 	try {
 		// 1. Get base SHA
@@ -92,9 +92,11 @@ export default defineEventHandler(async (event) => {
 		return { success: true, url: pr.html_url }
 	} catch (err: unknown) {
 		console.error('PR Action Failed:', err)
-		throw createError({
-			statusCode: err.response?.status || 500,
-			statusMessage: err.message || 'Failed to create PR',
-		})
+		const status =
+			err && typeof err === 'object' && 'response' in err
+				? (err.response as { status?: number } | undefined)?.status
+				: undefined
+		const message = err instanceof Error ? err.message : 'Failed to create PR'
+		throw createError({ statusCode: status || 500, statusMessage: message })
 	}
 })
