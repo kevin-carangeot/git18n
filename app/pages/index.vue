@@ -23,6 +23,7 @@ const diffData = ref<{
 	visualDiff: Record<string, unknown>
 	count: number
 	baseBranch: string
+	headBranch: string
 	indentation: string | number
 } | null>(null)
 
@@ -132,7 +133,7 @@ const createPullRequest = async () => {
 		const response = await $api('/api/create-pr', {
 			method: 'POST',
 			body: {
-				baseBranch: diffData.value?.baseBranch || 'main',
+				baseBranch: diffData.value?.headBranch || selectedPull.value,
 				translations: translationsPayload,
 				indentation: diffData.value?.indentation ?? 2,
 			},
@@ -229,7 +230,7 @@ const resetView = () => {
 				:tabs="resultTabs"
 				:loading-status="loadingStatus"
 				:diff-count="diffData?.count || 0"
-				:base-branch="diffData?.baseBranch || 'main'"
+				:base-branch="diffData?.headBranch || selectedPull"
 			/>
 
 			<PrActionCard :loading="isCreatingPR" @create="createPullRequest" />
