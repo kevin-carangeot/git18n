@@ -14,7 +14,7 @@
 		"badge": "Traduction par IA",
 		"titleLine1": "Traduisez chaque PR",
 		"titleLine2": "en un seul clic.",
-		"subtitle": "Vos clés i18n sont traduites par IA en {count} langues, puis une pull request est ouverte pour vous.",
+		"subtitle": "git18n traduit vos clés i18n par IA en {count} langues et vous ouvre la pull request.",
 		"reviewTitle": "Relire & éditer",
 		"editorMode": "Mode éditeur"
 	},
