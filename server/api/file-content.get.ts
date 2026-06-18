@@ -1,5 +1,7 @@
+import { getGitConfig } from '~~/server/utils/git-config'
+
 export default defineEventHandler(async (event) => {
-	const config = useRuntimeConfig()
+	const { owner, repo, token } = getGitConfig(event)
 	const query = getQuery(event)
 
 	const branch = query.branch as string
@@ -12,29 +14,14 @@ export default defineEventHandler(async (event) => {
 		})
 	}
 
-	const repoUrl = config.public.githubRepoUrl
-	const match = repoUrl.match(/github\.com\/([^/]+)\/([^/]+)/)
-
-	if (!match) {
-		throw createError({
-			statusCode: 500,
-			statusMessage:
-				'Configuration NUXT_PUBLIC_GITHUB_REPO_URL invalide. Format attendu : https://github.com/owner/repo',
-		})
-	}
-
-	const [, owner, repo] = match
-
 	try {
 		const rawContent = await $fetch(
 			`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`,
 			{
 				method: 'GET',
-				query: {
-					ref: branch,
-				},
+				query: { ref: branch },
 				headers: {
-					Authorization: `Bearer ${config.githubToken}`,
+					Authorization: `Bearer ${token}`,
 					'X-GitHub-Api-Version': '2022-11-28',
 					Accept: 'application/vnd.github.raw',
 				},
@@ -43,14 +30,11 @@ export default defineEventHandler(async (event) => {
 		)
 
 		return JSON.parse(rawContent)
-	} catch (err: unknow) {
+	} catch (err: unknown) {
 		console.error(`Erreur récupération fichier [${filePath}] sur [${branch}]:`, err)
 
-		if (err.status === 404) {
-			throw createError({
-				statusCode: 404,
-				statusMessage: `Fichier introuvable : ${filePath}`,
-			})
+		if (err && typeof err === 'object' && 'status' in err && err.status === 404) {
+			throw createError({ statusCode: 404, statusMessage: `Fichier introuvable : ${filePath}` })
 		}
 
 		throw createError({

@@ -21,6 +21,14 @@ body {
 	-webkit-font-smoothing: antialiased;
 }
 
+/* Interactive controls (buttons, select triggers) should show a pointer cursor.
+   Inputs are excluded so the search field keeps its text caret. */
+button:not(:disabled),
+[role='button']:not([aria-disabled='true']),
+[role='combobox']:not(input):not([aria-disabled='true']) {
+	cursor: pointer;
+}
+
 .g-shadow-md {
 	box-shadow: var(--g-shadow-md);
 }

@@ -1,26 +1,15 @@
-export default defineEventHandler(async () => {
-	const config = useRuntimeConfig()
+import { getGitConfig } from '~~/server/utils/git-config'
 
-	const repoUrl = config.public.githubRepoUrl
-	if (!repoUrl) {
-		throw createError({ statusCode: 500, statusMessage: 'GitHub Repo URL not configured' })
-	}
-
-	const match = repoUrl.match(/github\.com\/([^/]+)\/([^/]+)/)
-	if (!match) {
-		throw createError({ statusCode: 400, statusMessage: 'Invalid GitHub URL format' })
-	}
-	const [, owner, repo] = match
+export default defineEventHandler(async (event) => {
+	const { owner, repo, token } = getGitConfig(event)
 
 	try {
 		const pulls = await $fetch(`https://api.github.com/repos/${owner}/${repo}/pulls`, {
 			headers: {
-				Authorization: `Bearer ${config.githubToken}`,
+				Authorization: `Bearer ${token}`,
 				'X-GitHub-Api-Version': '2022-11-28',
 			},
-			query: {
-				per_page: 100,
-			},
+			query: { per_page: 100 },
 		})
 
 		return pulls.map((pull) => ({
