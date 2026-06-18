@@ -15,28 +15,25 @@ const repoDisplay = computed(() => {
 
 <template>
 	<div
-		class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-sm overflow-hidden"
+		class="g-shadow-md overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-white/10 dark:bg-slate-900"
 	>
-		<div class="p-4 flex items-center justify-between group">
-			<div class="flex items-center gap-3 min-w-0">
-				<div class="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg shrink-0">
-					<UIcon
-						name="i-simple-icons-github"
-						class="w-5 h-5 text-gray-900 dark:text-white"
-					/>
-				</div>
-				<div class="flex flex-col min-w-0">
-					<span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider"
-						>Repository</span
-					>
-					<a
-						:href="repoUrl"
-						target="_blank"
-						class="font-mono text-sm font-medium text-primary-500 hover:text-primary-600 truncate transition-colors"
-					>
-						{{ repoDisplay }}
-					</a>
-				</div>
+		<div class="flex items-center gap-3.5 p-[18px_20px]">
+			<div
+				class="grid size-10 flex-none place-items-center rounded-xl bg-slate-100 text-slate-500 dark:bg-white/5"
+			>
+				<UIcon name="i-simple-icons-github" class="size-[18px]" />
+			</div>
+			<div class="flex min-w-0 flex-1 flex-col gap-0.5">
+				<span class="text-[10.5px] font-bold uppercase tracking-[0.08em] text-slate-400"
+					>Repository</span
+				>
+				<a
+					:href="repoUrl"
+					target="_blank"
+					class="truncate font-mono text-[13.5px] font-medium text-emerald-700 transition-colors hover:text-emerald-800 dark:text-emerald-400"
+				>
+					{{ repoDisplay }}
+				</a>
 			</div>
 			<UButton
 				:to="repoUrl"
@@ -50,13 +47,15 @@ const repoDisplay = computed(() => {
 
 		<USeparator />
 
-		<div class="p-4 flex items-center gap-3 min-w-0">
-			<div class="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg shrink-0">
-				<UIcon name="i-octicon-git-pull-request-24" class="w-5 h-5 text-gray-500" />
+		<div class="flex items-center gap-3.5 p-[18px_20px]">
+			<div
+				class="grid size-10 flex-none place-items-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10"
+			>
+				<UIcon name="i-octicon-git-pull-request-24" class="size-[18px]" />
 			</div>
-			<div class="flex flex-col w-full">
-				<span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider"
-					>Source Pull Request</span
+			<div class="flex w-full flex-col gap-1">
+				<span class="text-[10.5px] font-bold uppercase tracking-[0.08em] text-slate-400"
+					>Source pull request</span
 				>
 				<USelectMenu
 					:model-value="modelValue"
@@ -65,7 +64,7 @@ const repoDisplay = computed(() => {
 					value-key="value"
 					searchable
 					placeholder="Select a PR to analyze..."
-					class="w-full mt-1"
+					class="w-full"
 					@update:model-value="emit('update:modelValue', $event)"
 				/>
 			</div>
