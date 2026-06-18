@@ -20,12 +20,12 @@
 	},
 	"settings": {
 		"title": "Configuration",
-		"subtitle": "Your credentials stay in this browser (localStorage) and are only sent to the server for the duration of each request."
+		"subtitle": "Your credentials stay in this browser and are only sent to the server for the duration of each request."
 	},
 	"configForm": {
 		"sectionLabel": "Configuration",
 		"sectionHint": "Connect your repository before starting",
-		"credentialsNote": "Your credentials stay in this browser (localStorage) and are only sent to the server for the duration of each request.",
+		"credentialsNote": "Your credentials stay in this browser and are only sent to the server for the duration of each request.",
 		"repoUrlLabel": "GitHub repository URL",
 		"folderLabel": "Translation folder",
 		"githubTokenLabel": "GitHub token",

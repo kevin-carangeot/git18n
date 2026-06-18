@@ -20,12 +20,12 @@
 	},
 	"settings": {
 		"title": "Configuration",
-		"subtitle": "Vos identifiants restent dans ce navigateur (localStorage) et sont envoyés au serveur uniquement le temps de chaque requête."
+		"subtitle": "Vos identifiants restent dans ce navigateur et sont envoyés au serveur uniquement le temps de chaque requête."
 	},
 	"configForm": {
 		"sectionLabel": "Configuration",
 		"sectionHint": "Connectez votre dépôt avant de commencer",
-		"credentialsNote": "Vos identifiants restent dans ce navigateur (localStorage) et ne sont envoyés au serveur que le temps de chaque requête.",
+		"credentialsNote": "Vos identifiants restent dans ce navigateur et ne sont envoyés au serveur que le temps de chaque requête.",
 		"repoUrlLabel": "URL du dépôt GitHub",
 		"folderLabel": "Dossier de traductions",
 		"githubTokenLabel": "Token GitHub",
