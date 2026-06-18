@@ -14,7 +14,7 @@
 		"badge": "Traduction par IA",
 		"titleLine1": "Traduisez chaque PR",
 		"titleLine2": "en un seul clic.",
-		"subtitle": "Clés i18n manquantes de vos fichiers JSON, traduites par IA en {count} langues, livrées en PR.",
+		"subtitle": "Vos JSON i18n, traduits par IA en {count} langues. Vous n'avez plus qu'à merger.",
 		"reviewTitle": "Relire & éditer",
 		"editorMode": "Mode éditeur"
 	},
