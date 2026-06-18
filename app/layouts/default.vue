@@ -1,9 +1,6 @@
 <script setup lang="ts">
-const config = useRuntimeConfig()
-const repoUrl = config.public.githubRepoUrl as string
-const repoDisplay = computed(() =>
-	repoUrl ? repoUrl.replace('https://github.com/', '') : 'Not configured'
-)
+const repoUrl = 'https://github.com/kevin-carangeot/git18n'
+const repoDisplay = repoUrl.replace('https://github.com/', '')
 </script>
 
 <template>
