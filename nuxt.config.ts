@@ -7,7 +7,7 @@ export default defineNuxtConfig({
 			viewport: 'width=device-width, initial-scale=1',
 		},
 	},
-	modules: ['@nuxt/ui', '@nuxt/eslint'],
+	modules: ['@nuxt/ui', '@nuxt/eslint', '@nuxt/fonts'],
 	css: ['~/assets/css/main.css'],
 	compatibilityDate: '2025-07-15',
 	devtools: { enabled: true },

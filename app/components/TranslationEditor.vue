@@ -24,16 +24,16 @@ const copyToClipboard = (content: string) => {
 <template>
 	<div class="space-y-4">
 		<div
-			class="bg-blue-50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900 rounded-lg p-3 flex items-center justify-between"
+			class="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-white/10 dark:bg-white/5"
 		>
-			<div class="flex items-center gap-2 text-sm text-blue-700 dark:text-blue-300">
-				<UIcon name="i-octicon-git-branch-24" />
+			<div class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+				<UIcon name="i-octicon-git-branch-24" class="text-emerald-600" />
 				<span class="font-medium">Base:</span>
-				<span class="font-mono text-xs bg-white dark:bg-black/20 px-2 py-0.5 rounded">
-					{{ baseBranch }}
-				</span>
+				<span class="rounded bg-white px-2 py-0.5 font-mono text-xs dark:bg-black/20">{{
+					baseBranch
+				}}</span>
 			</div>
-			<div class="text-xs font-mono text-blue-600/70">
+			<div class="font-mono text-xs text-slate-400">
 				Adding +{{ diffCount }} keys to {{ Object.keys(modelValue).length }} files
 			</div>
 		</div>
@@ -41,45 +41,53 @@ const copyToClipboard = (content: string) => {
 		<UTabs :items="tabs" class="w-full">
 			<template #content-view="{ item }">
 				<div
-					class="p-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-b-lg rounded-tr-lg min-h-[400px] relative shadow-sm"
+					class="g-shadow-md relative min-h-100 rounded-xl border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-slate-900"
 				>
 					<div
 						v-if="loadingStatus[item.code]"
-						class="flex flex-col items-center justify-center h-64 text-gray-400 gap-3"
+						class="flex h-64 flex-col items-center justify-center gap-4"
 					>
-						<UIcon
-							name="i-heroicons-arrow-path"
-							class="animate-spin w-10 h-10 text-primary-500"
-						/>
-						<div class="flex flex-col items-center">
-							<span class="text-sm font-medium text-gray-900 dark:text-white"
-								>Generating {{ item.label }}...</span
-							>
+						<div class="w-full max-w-md space-y-2.5">
+							<div
+								class="h-3 w-1/3 animate-pulse rounded bg-slate-200 dark:bg-white/10"
+							/>
+							<div
+								class="h-3 w-2/3 animate-pulse rounded bg-slate-200 dark:bg-white/10"
+							/>
+							<div
+								class="h-3 w-1/2 animate-pulse rounded bg-slate-200 dark:bg-white/10"
+							/>
+							<div
+								class="h-3 w-3/5 animate-pulse rounded bg-slate-200 dark:bg-white/10"
+							/>
 						</div>
+						<span class="flex items-center gap-2 text-sm font-medium text-slate-500">
+							<UIcon name="i-heroicons-sparkles" class="size-4 text-emerald-500" />
+							Generating {{ item.label }}...
+						</span>
 					</div>
 
-					<div v-else class="h-full flex flex-col">
+					<div v-else class="flex h-full flex-col">
 						<UTextarea
 							:model-value="modelValue[item.code]"
 							autoresize
 							:rows="16"
-							color="gray"
+							color="neutral"
 							variant="outline"
-							class="font-mono text-xs w-full flex-1"
+							class="w-full flex-1 font-mono text-xs"
 							placeholder="{ ... }"
 							@update:model-value="(val) => updateTranslation(item.code, val)"
 						/>
-
 						<div
-							class="flex justify-between items-center mt-3 pt-3 border-t border-gray-200 dark:border-gray-800"
+							class="mt-3 flex items-center justify-between border-t border-slate-200 pt-3 dark:border-white/10"
 						>
-							<span class="text-[10px] text-gray-400 flex items-center gap-1">
-								<UIcon name="i-heroicons-check-circle" class="text-green-500" />
+							<span class="flex items-center gap-1 text-[10px] text-slate-400">
+								<UIcon name="i-heroicons-check-circle" class="text-emerald-500" />
 								Valid JSON required
 							</span>
 							<UButton
 								size="xs"
-								color="gray"
+								color="neutral"
 								variant="ghost"
 								icon="i-heroicons-clipboard-document"
 								label="Copy"

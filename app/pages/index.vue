@@ -46,7 +46,7 @@ watch(selectedPull, async (newBranch) => {
 		})
 	} catch (err: unknown) {
 		console.error(err)
-		toast.add({ title: 'Error', description: 'Failed to fetch diff', color: 'red' })
+		toast.add({ title: 'Error', description: 'Failed to fetch diff', color: 'error' })
 	} finally {
 		fetchingDiff.value = false
 	}
@@ -73,10 +73,14 @@ const startTranslation = async () => {
 			editableTranslations.value[lang] = JSON.stringify(translatedJson, null, 4)
 			loadingStatus.value[lang] = false
 		}
-		toast.add({ title: 'Success', description: 'All translations generated!', color: 'green' })
+		toast.add({
+			title: 'Success',
+			description: 'All translations generated!',
+			color: 'success',
+		})
 	} catch (err: unknown) {
 		console.error(err)
-		toast.add({ title: 'Error', description: 'Translation failed', color: 'red' })
+		toast.add({ title: 'Error', description: 'Translation failed', color: 'error' })
 	} finally {
 		isTranslating.value = false
 	}
@@ -121,7 +125,7 @@ const createPullRequest = async () => {
 
 		toast.add({
 			title: 'PR Created!',
-			color: 'green',
+			color: 'success',
 			icon: 'i-heroicons-check-badge',
 			timeout: 5000,
 			callback: () => window.open(response.url, '_blank'),
@@ -129,7 +133,7 @@ const createPullRequest = async () => {
 		window.open(response.url, '_blank')
 	} catch (err: unknown) {
 		const message = err instanceof Error ? err.message : 'Unknown error'
-		toast.add({ title: 'Failed', description: message, color: 'red' })
+		toast.add({ title: 'Failed', description: message, color: 'error' })
 	} finally {
 		isCreatingPR.value = false
 	}
@@ -142,25 +146,48 @@ const resetView = () => {
 </script>
 
 <template>
-	<UContainer class="max-w-4xl py-6">
-		<div class="flex items-center justify-between mb-6">
+	<UContainer class="max-w-[920px] pt-10 pb-14">
+		<div v-if="hasResults" class="mb-10 flex items-center justify-between">
 			<div class="flex items-center gap-2">
-				<h1 class="text-2xl font-bold text-gray-900 dark:text-white">Git18n</h1>
-				<UBadge v-if="hasResults" color="primary" variant="subtle" size="xs"
-					>Editor Mode</UBadge
-				>
+				<h2 class="text-xl font-semibold tracking-tight text-slate-900 dark:text-white">
+					Review &amp; edit
+				</h2>
+				<UBadge color="primary" variant="subtle" size="xs">Editor mode</UBadge>
 			</div>
 			<UButton
-				v-if="hasResults"
 				icon="i-heroicons-arrow-left"
-				color="gray"
+				color="neutral"
 				variant="ghost"
-				label="Back to Config"
+				label="Back to config"
 				@click="resetView"
 			/>
 		</div>
 
-		<div v-if="!hasResults" class="space-y-6 animate-fade-in">
+		<div v-if="!hasResults" class="animate-fade-in space-y-7">
+			<div class="mb-5 text-center">
+				<span
+					class="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-400"
+				>
+					<span class="size-1.5 rounded-full bg-emerald-500 ring-3 ring-emerald-500/20" />
+					Localization engine
+				</span>
+				<h1
+					class="text-4xl font-bold leading-[1.08] tracking-tight text-slate-900 dark:text-white"
+				>
+					Traduisez chaque PR
+					<span
+						class="block bg-linear-to-r from-emerald-600 to-emerald-700 bg-clip-text text-transparent"
+					>
+						en un seul clic.
+					</span>
+				</h1>
+				<p class="mx-auto mt-3 max-w-md text-base text-slate-500 dark:text-slate-400">
+					git18n détecte les clés manquantes, les traduit par IA dans
+					{{ config.public.targetLanguages.length }} langues et ouvre la Pull Request pour
+					vous.
+				</p>
+			</div>
+
 			<ConfigSelector
 				v-model="selectedPull"
 				:repo-url="config.public.githubRepoUrl"
