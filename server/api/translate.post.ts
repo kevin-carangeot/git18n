@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
 
 	const model = genAI.getGenerativeModel({
 		model: 'gemini-2.5-flash-lite',
-		generationConfig: { responseMimeType: 'application/json' },
+		generationConfig: { responseMimeType: 'application/json', temperature: 0 },
 	})
 
 	const prompt = buildTranslationPrompt(content, targetLang)

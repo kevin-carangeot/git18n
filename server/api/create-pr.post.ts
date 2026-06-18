@@ -1,11 +1,10 @@
-import { detectIndentation } from '~~/server/utils/indent'
 import { merge } from '~~/server/utils/merge'
 import { getGitConfig } from '~~/server/utils/git-config'
 
 export default defineEventHandler(async (event) => {
 	const { owner, repo, token, folder } = getGitConfig(event)
 	const body = await readBody(event)
-	const { translations, baseBranch } = body
+	const { translations, baseBranch, indentation = 2 } = body
 
 	if (!translations) throw createError({ statusCode: 400, statusMessage: 'Missing parameters' })
 
@@ -41,7 +40,6 @@ export default defineEventHandler(async (event) => {
 
 			let currentContentObj = {}
 			let fileSha = undefined
-			let indentation: string | number = 2
 
 			try {
 				const fileData = await $fetch<{ content: string; sha: string }>(
@@ -53,7 +51,6 @@ export default defineEventHandler(async (event) => {
 				)
 
 				const rawContent = Buffer.from(fileData.content, 'base64').toString('utf-8')
-				indentation = detectIndentation(rawContent)
 				currentContentObj = JSON.parse(rawContent)
 				fileSha = fileData.sha
 			} catch {

@@ -23,6 +23,7 @@ const diffData = ref<{
 	visualDiff: Record<string, unknown>
 	count: number
 	baseBranch: string
+	indentation: string | number
 } | null>(null)
 
 const fetchingDiff = ref(false)
@@ -86,7 +87,11 @@ const startTranslation = async () => {
 				method: 'POST',
 				body: { content: contentToTranslate, targetLang: lang },
 			})
-			editableTranslations.value[lang] = JSON.stringify(translatedJson, null, 4)
+			editableTranslations.value[lang] = JSON.stringify(
+				translatedJson,
+				null,
+				diffData.value.indentation
+			)
 			loadingStatus.value[lang] = false
 		}
 		toast.add({
@@ -129,6 +134,7 @@ const createPullRequest = async () => {
 			body: {
 				baseBranch: diffData.value?.baseBranch || 'main',
 				translations: translationsPayload,
+				indentation: diffData.value?.indentation ?? 2,
 			},
 		})
 

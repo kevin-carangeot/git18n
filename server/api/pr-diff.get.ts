@@ -1,4 +1,5 @@
 import { calculateJsonDiff, calculateDetailedDiff } from '~~/server/utils/diff'
+import { detectIndentation } from '~~/server/utils/indent'
 import { getGitConfig } from '~~/server/utils/git-config'
 
 // 👇 HELPER FUNCTION: Recursively counts only the final values (leaves)
@@ -39,8 +40,8 @@ export default defineEventHandler(async (event) => {
 		Accept: 'application/vnd.github.raw',
 	}
 
-	// Helper to fetch and parse safely
-	const fetchJsonFile = async (ref: string) => {
+	// Helper to fetch and parse safely, keeping the raw text to detect indentation
+	const fetchJsonFile = async (ref: string): Promise<{ data: Record<string, unknown>; raw: string }> => {
 		try {
 			const raw = await $fetch<string>(
 				`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`,
@@ -50,9 +51,9 @@ export default defineEventHandler(async (event) => {
 					responseType: 'text',
 				}
 			)
-			return JSON.parse(raw)
+			return { data: JSON.parse(raw), raw }
 		} catch {
-			return {}
+			return { data: {}, raw: '' }
 		}
 	}
 
@@ -67,14 +68,14 @@ export default defineEventHandler(async (event) => {
 		const baseBranch = repoInfo.default_branch
 
 		// 2. Fetch both versions
-		const [headContent, baseContent] = await Promise.all([
+		const [head, base] = await Promise.all([
 			fetchJsonFile(branchName),
 			fetchJsonFile(baseBranch),
 		])
 
 		// 3. Calculate Diffs
-		const diffJson = calculateJsonDiff(baseContent, headContent)
-		const visualDiff = calculateDetailedDiff(baseContent, headContent)
+		const diffJson = calculateJsonDiff(base.data, head.data)
+		const visualDiff = calculateDetailedDiff(base.data, head.data)
 
 		const preciseCount = countLeafNodes(diffJson)
 
@@ -84,6 +85,7 @@ export default defineEventHandler(async (event) => {
 			diff: diffJson,
 			visualDiff: visualDiff,
 			count: preciseCount,
+			indentation: detectIndentation(head.raw || base.raw),
 		}
 	} catch (err: unknown) {
 		console.error('Diff Error:', err)
