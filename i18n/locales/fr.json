@@ -18,9 +18,6 @@
 		"reviewTitle": "Relire & éditer",
 		"editorMode": "Mode éditeur"
 	},
-	"settings": {
-		"title": "Configuration"
-	},
 	"configForm": {
 		"sectionLabel": "Configuration",
 		"sectionHint": "Connectez votre dépôt avant de commencer",

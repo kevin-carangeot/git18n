@@ -18,9 +18,6 @@
 		"reviewTitle": "Review & edit",
 		"editorMode": "Editor mode"
 	},
-	"settings": {
-		"title": "Configuration"
-	},
 	"configForm": {
 		"sectionLabel": "Configuration",
 		"sectionHint": "Connect your repository before starting",
