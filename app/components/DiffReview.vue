@@ -13,41 +13,44 @@ const emit = defineEmits(['start-translation'])
 	<div>
 		<div
 			v-if="fetching"
-			class="text-sm text-gray-500 flex items-center gap-2 justify-center py-10"
+			class="flex items-center justify-center gap-2 py-10 text-sm text-slate-500"
 		>
-			<UIcon name="i-heroicons-arrow-path" class="animate-spin w-6 h-6" />
+			<UIcon name="i-heroicons-arrow-path" class="size-6 animate-spin text-emerald-500" />
 			<span>Analysing translation keys...</span>
 		</div>
 
 		<div v-else-if="diffData">
-			<UAlert
+			<div
 				v-if="diffData.count === 0"
-				icon="i-heroicons-information-circle"
-				color="amber"
-				variant="subtle"
-				title="No changes"
-				description="This PR doesn't introduce any new keys in the source file."
-			/>
+				class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-white/50 py-14 text-center dark:border-white/10 dark:bg-white/5"
+			>
+				<UIcon name="i-heroicons-check-circle" class="mb-3 size-9 text-emerald-500" />
+				<p class="text-sm font-medium text-slate-900 dark:text-white">No new keys</p>
+				<p class="mt-1 text-sm text-slate-500">
+					This PR doesn't introduce any new keys in the source file.
+				</p>
+			</div>
 
-			<div v-else class="space-y-6">
+			<div v-else class="space-y-5">
 				<div
-					class="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg border border-gray-200 dark:border-gray-700"
+					class="g-shadow-md overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-white/10 dark:bg-slate-900"
 				>
-					<div class="flex items-center justify-between mb-2">
+					<div
+						class="flex items-center justify-between border-b border-slate-200 bg-slate-50/60 px-4.5 py-3 dark:border-white/10 dark:bg-white/5"
+					>
 						<span
-							class="text-xs font-bold text-primary-600 dark:text-primary-400 flex items-center gap-1"
+							class="flex items-center gap-2 text-[13px] font-semibold text-slate-900 dark:text-white"
 						>
-							<UIcon name="i-heroicons-plus-circle" /> Missing keys detected
+							<UIcon name="i-heroicons-plus-circle" class="text-emerald-600" />
+							Missing keys detected
 						</span>
 						<span
-							class="text-xs text-gray-500 font-mono bg-white dark:bg-gray-900 px-2 py-0.5 rounded border"
+							class="rounded-md border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 font-mono text-xs font-semibold text-emerald-700 dark:border-emerald-500/25 dark:bg-emerald-500/10 dark:text-emerald-400"
 						>
 							+{{ diffData.count }} keys
 						</span>
 					</div>
-					<div
-						class="bg-white dark:bg-gray-950 p-3 rounded border border-gray-100 dark:border-gray-800 overflow-auto max-h-64"
-					>
+					<div class="max-h-64 overflow-auto p-4">
 						<DiffViewer :data="diffData.visualDiff" />
 					</div>
 				</div>
@@ -58,10 +61,10 @@ const emit = defineEmits(['start-translation'])
 					color="primary"
 					icon="i-heroicons-sparkles"
 					:loading="isTranslating"
-					class="cursor-pointer"
+					class="g-shadow-lg cursor-pointer bg-linear-to-r from-emerald-500 to-emerald-700 font-semibold"
 					@click="emit('start-translation')"
 				>
-					Generate Translations ({{ targetLangsCount }} langs)
+					Générer les traductions · {{ targetLangsCount }} langues
 				</UButton>
 			</div>
 		</div>
