@@ -34,8 +34,9 @@ export const getGitConfig = (
 		if (!match)
 			throw createError({ statusCode: 400, statusMessage: 'Invalid GitHub repository URL' })
 
-		owner = match[1]
-		repo = match[2].replace(/\.git$/, '')
+		const [, ownerMatch, repoMatch] = match
+		owner = ownerMatch ?? ''
+		repo = (repoMatch ?? '').replace(/\.git$/, '')
 	}
 
 	if (opts.gemini && !geminiApiKey)
