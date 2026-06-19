@@ -16,7 +16,7 @@
 		"badge": "AI translation",
 		"titleLine1": "Translate every PR",
 		"titleLine2": "in a single click.",
-		"subtitle": "git18n spots your new i18n keys, translates them with AI into up to {count} different languages, and hands you a pull request ready to merge.",
+		"subtitle": "git18n spots your new i18n keys and translates them automatically with AI — up to {count} languages — into a pull request ready to merge.",
 		"reviewTitle": "Review & edit",
 		"editorMode": "Editor mode",
 		"configCta": "Start by configuring your project"
