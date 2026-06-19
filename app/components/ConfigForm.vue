@@ -57,7 +57,7 @@ const onReset = () => {
 	<div
 		class="g-shadow-md overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-white/10 dark:bg-slate-900"
 	>
-		<UTabs v-model="active" :items="tabs" class="w-full" :ui="{ list: 'px-2 pt-2' }">
+		<UTabs v-model="active" :items="tabs" variant="link" class="w-full">
 			<template #trailing="{ item }">
 				<UIcon
 					v-if="validByValue[item.value]"
