@@ -199,7 +199,13 @@ const resetView = () => {
 					</span>
 				</h1>
 				<p class="mx-auto mt-3 max-w-md text-base text-slate-500 dark:text-slate-400">
-					{{ t('home.subtitle', { count: gitConfig.targetLanguages.length }) }}
+					{{
+						t(
+							'home.subtitle',
+							{ count: gitConfig.targetLanguages.length },
+							gitConfig.targetLanguages.length
+						)
+					}}
 				</p>
 			</div>
 

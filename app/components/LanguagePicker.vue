@@ -29,7 +29,7 @@ const clearAll = () => {
 	<div>
 		<div class="mb-3 flex items-center justify-between">
 			<span class="text-sm text-slate-500 dark:text-slate-400">
-				{{ t('languagePicker.count', { count: selected.length }) }}
+				{{ t('languagePicker.count', { count: selected.length }, selected.length) }}
 			</span>
 			<div class="flex gap-1.5">
 				<UButton
