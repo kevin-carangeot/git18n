@@ -31,6 +31,15 @@
 		"resetTitle": "Reset",
 		"resetDescription": "Configuration cleared."
 	},
+	"languagePicker": {
+		"title": "Languages to translate",
+		"count": "{count} languages selected",
+		"selectAll": "Select all",
+		"clearAll": "Clear all",
+		"source": "Source",
+		"mandatory": "Required",
+		"footnote": "English is the source language (en.json): it is translated into each checked language."
+	},
 	"configSelector": {
 		"notConfigured": "Not configured",
 		"repository": "Repository",
