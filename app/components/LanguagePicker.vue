@@ -7,7 +7,10 @@ const { t, locale } = useI18n()
 const displayNames = computed(
 	() => new Intl.DisplayNames([locale.value], { type: 'language' })
 )
-const nameOf = (code: string) => displayNames.value.of(code) ?? code
+const nameOf = (code: string) => {
+	const name = displayNames.value.of(code) ?? code
+	return name.charAt(0).toUpperCase() + name.slice(1)
+}
 
 const isOn = (code: string) => selected.value.includes(code)
 
