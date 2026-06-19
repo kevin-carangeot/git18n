@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { LANGUAGE_CATALOG } from '~/types/config'
+import type { DiffTree } from '~~/server/utils/diff'
 
 const { config: gitConfig, isConfigured } = useGitConfig()
 const { $api } = useNuxtApp()
@@ -21,7 +22,7 @@ watch(isConfigured, (configured) => {
 
 const diffData = ref<{
 	diff: Record<string, unknown>
-	visualDiff: Record<string, unknown>
+	visualDiff: DiffTree
 	count: number
 	baseBranch: string
 	headBranch: string

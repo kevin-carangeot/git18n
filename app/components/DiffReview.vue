@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import type { DiffTree } from '~~/server/utils/diff'
+
 defineProps<{
-	diffData: { count: number; visualDiff: Record<string, unknown>[] } | null
+	diffData: { count: number; visualDiff: DiffTree } | null
 	fetching: boolean
 	isTranslating: boolean
 	targetLangsCount: number

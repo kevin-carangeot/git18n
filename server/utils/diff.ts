@@ -1,5 +1,22 @@
 type JsonObject = Record<string, unknown>
 
+export interface DiffAdded {
+	status: 'added'
+	val: unknown
+}
+
+export interface DiffModified {
+	status: 'modified'
+	old: unknown
+	new: unknown
+}
+
+export type DiffLeaf = DiffAdded | DiffModified
+
+export interface DiffTree {
+	[key: string]: DiffLeaf | DiffTree
+}
+
 /**
  * deeply compares two objects and returns ONLY the keys
  * from 'current' that are different or new compared to 'base'.
@@ -36,7 +53,7 @@ export const calculateJsonDiff = (base: unknown, current: unknown): unknown => {
 	return diff
 }
 
-export const calculateDetailedDiff = (base: unknown, current: unknown): JsonObject => {
+export const calculateDetailedDiff = (base: unknown, current: unknown): DiffTree => {
 	// If inputs are not objects, we can't generate a detailed diff tree, return empty
 	if (
 		typeof base !== 'object' ||
@@ -49,7 +66,7 @@ export const calculateDetailedDiff = (base: unknown, current: unknown): JsonObje
 
 	const baseObj = base as JsonObject
 	const currentObj = current as JsonObject
-	const diff: JsonObject = {}
+	const diff: DiffTree = {}
 
 	for (const key in currentObj) {
 		// CASE 1 : New key
