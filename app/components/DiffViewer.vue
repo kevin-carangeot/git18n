@@ -6,21 +6,13 @@ defineProps<{
 	data: DiffTree
 }>()
 
-const computeDiffHtml = (oldText: unknown, newText: unknown) => {
-	const diff = Diff.diffWordsWithSpace(String(oldText), String(newText))
+type DiffSegment = { value: string; type: 'added' | 'removed' | 'common' }
 
-	return diff
-		.map((part) => {
-			if (part.added) {
-				return `<span class="text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/40 font-bold px-1 rounded-sm">${part.value}</span>`
-			}
-			if (part.removed) {
-				return `<span class="text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-900/20 line-through decoration-red-500/50 opacity-70 mx-1">${part.value}</span>`
-			}
-			return part.value
-		})
-		.join('')
-}
+const computeDiffParts = (oldText: unknown, newText: unknown): DiffSegment[] =>
+	Diff.diffWordsWithSpace(String(oldText), String(newText)).map((part) => ({
+		value: part.value,
+		type: part.added ? 'added' : part.removed ? 'removed' : 'common',
+	}))
 </script>
 
 <template>
@@ -41,7 +33,24 @@ const computeDiffHtml = (oldText: unknown, newText: unknown) => {
 			>
 				<span class="text-emerald-700 dark:text-emerald-400">"{{ key }}"</span>:
 				<span class="text-gray-600 dark:text-gray-400">"</span>
-				<span v-html="computeDiffHtml(value.old, value.new)" />
+				<span>
+					<template
+						v-for="(part, i) in computeDiffParts(value.old, value.new)"
+						:key="i"
+					>
+						<span
+							v-if="part.type === 'added'"
+							class="text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/40 font-bold px-1 rounded-sm"
+							>{{ part.value }}</span
+						>
+						<span
+							v-else-if="part.type === 'removed'"
+							class="text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-900/20 line-through decoration-red-500/50 opacity-70 mx-1"
+							>{{ part.value }}</span
+						>
+						<template v-else>{{ part.value }}</template>
+					</template>
+				</span>
 				<span class="text-gray-600 dark:text-gray-400">",</span>
 			</div>
 
