@@ -5,7 +5,9 @@
 		"reset": "Réinitialiser",
 		"copy": "Copier",
 		"backToConfig": "Retour à la config",
-		"language": "Langue"
+		"language": "Langue",
+		"next": "Suivant",
+		"previous": "Précédent"
 	},
 	"header": {
 		"settingsAria": "Paramètres"
@@ -29,7 +31,14 @@
 		"savedTitle": "Enregistré",
 		"savedDescription": "Configuration stockée localement.",
 		"resetTitle": "Réinitialisé",
-		"resetDescription": "Configuration effacée."
+		"resetDescription": "Configuration effacée.",
+		"incomplete": "À compléter : {sections}",
+		"complete": "Configuration complète"
+	},
+	"configSteps": {
+		"repoTitle": "Dépôt GitHub",
+		"languagesTitle": "Langues",
+		"apiKeyTitle": "Clé API"
 	},
 	"languagePicker": {
 		"title": "Langues à traduire",

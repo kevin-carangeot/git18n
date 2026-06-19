@@ -5,7 +5,9 @@
 		"reset": "Reset",
 		"copy": "Copy",
 		"backToConfig": "Back to config",
-		"language": "Language"
+		"language": "Language",
+		"next": "Next",
+		"previous": "Back"
 	},
 	"header": {
 		"settingsAria": "Settings"
@@ -29,7 +31,14 @@
 		"savedTitle": "Saved",
 		"savedDescription": "Configuration stored locally.",
 		"resetTitle": "Reset",
-		"resetDescription": "Configuration cleared."
+		"resetDescription": "Configuration cleared.",
+		"incomplete": "To complete: {sections}",
+		"complete": "Configuration complete"
+	},
+	"configSteps": {
+		"repoTitle": "GitHub repository",
+		"languagesTitle": "Languages",
+		"apiKeyTitle": "API key"
 	},
 	"languagePicker": {
 		"title": "Languages to translate",
