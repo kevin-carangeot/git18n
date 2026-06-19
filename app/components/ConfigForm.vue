@@ -62,7 +62,7 @@ const onReset = () => {
 			:items="tabs"
 			variant="link"
 			class="w-full"
-			:ui="{ list: 'w-full', trigger: 'grow' }"
+			:ui="{ list: 'w-full', trigger: 'grow py-3.5' }"
 		>
 			<template #trailing="{ item }">
 				<UIcon
