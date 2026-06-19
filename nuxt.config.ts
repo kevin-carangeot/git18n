@@ -25,10 +25,5 @@ export default defineNuxtConfig({
 	css: ['~/assets/css/main.css'],
 	compatibilityDate: '2025-07-15',
 	devtools: { enabled: true },
-	runtimeConfig: {
-		public: {
-			targetLanguages: ['fr', 'es', 'de', 'it', 'pt', 'nl', 'pl', 'ru', 'ro'],
-		},
-	},
 	ssr: false,
 })

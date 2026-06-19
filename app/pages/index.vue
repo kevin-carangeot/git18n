@@ -1,5 +1,4 @@
 <script setup lang="ts">
-const config = useRuntimeConfig()
 const { config: gitConfig, isConfigured } = useGitConfig()
 const { $api } = useNuxtApp()
 const toast = useToast()
@@ -37,7 +36,7 @@ const loadingStatus = ref<Record<string, boolean>>({})
 const hasResults = computed(() => Object.keys(loadingStatus.value).length > 0)
 
 const resultTabs = computed(() => {
-	return (config.public.targetLanguages || []).map((lang: string) => ({
+	return gitConfig.value.targetLanguages.map((lang: string) => ({
 		label: lang.toUpperCase(),
 		code: lang,
 		slot: 'content-view',
@@ -72,7 +71,7 @@ watch(selectedPull, async (newBranch) => {
 const startTranslation = async () => {
 	if (!diffData.value || diffData.value?.count === 0) return
 	isTranslating.value = true
-	const languages = config.public.targetLanguages as string[]
+	const languages = gitConfig.value.targetLanguages
 
 	languages.forEach((lang) => {
 		loadingStatus.value[lang] = true
@@ -199,7 +198,7 @@ const resetView = () => {
 					</span>
 				</h1>
 				<p class="mx-auto mt-3 max-w-md text-base text-slate-500 dark:text-slate-400">
-					{{ t('home.subtitle', { count: config.public.targetLanguages.length }) }}
+					{{ t('home.subtitle', { count: gitConfig.targetLanguages.length }) }}
 				</p>
 			</div>
 
@@ -217,7 +216,7 @@ const resetView = () => {
 					:diff-data="diffData"
 					:fetching="fetchingDiff"
 					:is-translating="isTranslating"
-					:target-langs-count="config.public.targetLanguages.length"
+					:target-langs-count="gitConfig.targetLanguages.length"
 					@start-translation="startTranslation"
 				/>
 			</template>
