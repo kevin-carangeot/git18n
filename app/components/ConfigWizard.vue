@@ -4,30 +4,38 @@ const { form, repoUrlValid, repoValid, languagesValid, apiKeyValid, canSave, sav
 const toast = useToast()
 const { t } = useI18n()
 
-const steps = computed(() => [
-	{
-		title: t('configSteps.repoTitle'),
-		headline: t('configSteps.repoHeadline'),
-		icon: 'i-octicon-mark-github-16',
-		slot: 'repo',
-	},
-	{
-		title: t('configSteps.languagesTitle'),
-		headline: t('configSteps.languagesHeadline'),
-		icon: 'i-heroicons-language',
-		slot: 'languages',
-	},
-	{
-		title: t('configSteps.apiKeyTitle'),
-		headline: t('configSteps.apiKeyHeadline'),
-		icon: 'i-heroicons-key',
-		slot: 'apiKey',
-	},
-])
+const stepValid = computed(() => [repoValid.value, languagesValid.value, apiKeyValid.value])
+
+const steps = computed(() =>
+	[
+		{
+			title: t('configSteps.repoTitle'),
+			headline: t('configSteps.repoHeadline'),
+			icon: 'i-octicon-mark-github-16',
+			slot: 'repo',
+		},
+		{
+			title: t('configSteps.languagesTitle'),
+			headline: t('configSteps.languagesHeadline'),
+			icon: 'i-heroicons-language',
+			slot: 'languages',
+		},
+		{
+			title: t('configSteps.apiKeyTitle'),
+			headline: t('configSteps.apiKeyHeadline'),
+			icon: 'i-heroicons-key',
+			slot: 'apiKey',
+		},
+	].map((step, index) => ({
+		...step,
+		// A step is reachable only once every preceding step is valid,
+		// preventing direct navigation via the stepper header.
+		disabled: stepValid.value.slice(0, index).some((valid) => !valid),
+	}))
+)
 
 const currentStep = ref(0)
 const currentHeadline = computed(() => steps.value[currentStep.value].headline)
-const stepValid = computed(() => [repoValid.value, languagesValid.value, apiKeyValid.value])
 const currentValid = computed(() => stepValid.value[currentStep.value])
 const isLast = computed(() => currentStep.value === steps.value.length - 1)
 
