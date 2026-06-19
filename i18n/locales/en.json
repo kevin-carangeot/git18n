@@ -19,7 +19,7 @@
 		"subtitle": "Powered by AI, git18n spots and automatically translates your new i18n keys to deliver up to {count} languages in a pull request ready to merge.",
 		"reviewTitle": "Review & edit",
 		"editorMode": "Editor mode",
-		"configCta": "Start by configuring your project"
+		"configEyebrow": "Configuration"
 	},
 	"configForm": {
 		"credentialsNote": "Your credentials stay in this browser and are only sent to the server for the duration of each request.",
@@ -37,7 +37,10 @@
 	"configSteps": {
 		"repoTitle": "GitHub repository",
 		"languagesTitle": "Languages",
-		"apiKeyTitle": "API key"
+		"apiKeyTitle": "API key",
+		"repoHeadline": "Connect your GitHub repository",
+		"languagesHeadline": "Choose your target languages",
+		"apiKeyHeadline": "Add your Gemini API key"
 	},
 	"languagePicker": {
 		"title": "Languages to translate",
