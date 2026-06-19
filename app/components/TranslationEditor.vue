@@ -21,7 +21,7 @@ const copyToClipboard = (content: string) => {
 	toast.add({
 		title: t('translationEditor.copied'),
 		icon: 'i-heroicons-clipboard-document-check',
-		timeout: 2000,
+		duration: 2000,
 	})
 }
 </script>
