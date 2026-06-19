@@ -118,13 +118,13 @@ const onReset = () => {
 				}}</span>
 			</div>
 			<div class="flex items-center gap-3">
-				<UButton :label="t('common.save')" :disabled="!canSave" @click="onSave" />
 				<UButton
 					:label="t('common.reset')"
 					color="neutral"
 					variant="ghost"
 					@click="onReset"
 				/>
+				<UButton :label="t('common.save')" :disabled="!canSave" @click="onSave" />
 			</div>
 		</div>
 	</div>
