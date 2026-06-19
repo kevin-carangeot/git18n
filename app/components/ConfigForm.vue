@@ -15,7 +15,8 @@ const canSave = computed(
 		repoUrlValid.value &&
 		Boolean(form.translationFolder.trim()) &&
 		Boolean(form.githubToken.trim()) &&
-		Boolean(form.geminiApiKey.trim())
+		Boolean(form.geminiApiKey.trim()) &&
+		form.targetLanguages.length > 0
 )
 
 const onSave = () => {
@@ -90,6 +91,10 @@ const onReset = () => {
 
 			<UFormField :label="t('configForm.geminiKeyLabel')" required>
 				<UInput v-model="form.geminiApiKey" placeholder="AIza…" class="w-full" />
+			</UFormField>
+
+			<UFormField :label="t('languagePicker.title')" required>
+				<LanguagePicker v-model="form.targetLanguages" />
 			</UFormField>
 
 			<div class="flex items-center gap-3 pt-1">

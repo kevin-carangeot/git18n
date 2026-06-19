@@ -31,6 +31,15 @@
 		"resetTitle": "Réinitialisé",
 		"resetDescription": "Configuration effacée."
 	},
+	"languagePicker": {
+		"title": "Langues à traduire",
+		"count": "{count} langues sélectionnées",
+		"selectAll": "Tout cocher",
+		"clearAll": "Tout décocher",
+		"source": "Source",
+		"mandatory": "Obligatoire",
+		"footnote": "L'anglais est la langue source (en.json) : il est traduit vers chaque langue cochée."
+	},
 	"configSelector": {
 		"notConfigured": "Non configuré",
 		"repository": "Dépôt",
