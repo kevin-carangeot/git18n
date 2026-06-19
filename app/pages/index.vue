@@ -203,6 +203,13 @@ const resetView = () => {
 				</p>
 			</div>
 
+			<p
+				v-if="!isConfigured"
+				class="-mt-2 text-center text-sm font-semibold text-emerald-700 dark:text-emerald-400"
+			>
+				{{ t('home.configCta') }}
+			</p>
+
 			<ConfigWizard v-if="!isConfigured" />
 
 			<template v-else>

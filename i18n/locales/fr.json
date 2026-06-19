@@ -18,7 +18,8 @@
 		"titleLine2": "en un seul clic.",
 		"subtitle": "git18n repère vos nouvelles clés i18n, les traduit par l'IA en {count} langues et vous prépare une pull request prête à merger.",
 		"reviewTitle": "Relire & éditer",
-		"editorMode": "Mode éditeur"
+		"editorMode": "Mode éditeur",
+		"configCta": "Commencez par configurer votre projet"
 	},
 	"configForm": {
 		"credentialsNote": "Vos identifiants restent dans ce navigateur et ne sont envoyés au serveur que le temps de chaque requête.",

@@ -18,7 +18,8 @@
 		"titleLine2": "in a single click.",
 		"subtitle": "git18n spots your new i18n keys, translates them with AI into {count} languages, and hands you a pull request ready to merge.",
 		"reviewTitle": "Review & edit",
-		"editorMode": "Editor mode"
+		"editorMode": "Editor mode",
+		"configCta": "Start by configuring your project"
 	},
 	"configForm": {
 		"credentialsNote": "Your credentials stay in this browser and are only sent to the server for the duration of each request.",
