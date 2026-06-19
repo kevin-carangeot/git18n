@@ -35,6 +35,22 @@ L'outil ne retraduit pas tout le fichier à chaque fois. Il **diffe le fichier s
 
 ---
 
+## 🖼 Aperçu
+
+**1. Configuration** — connexion du dépôt GitHub, du dossier de traductions et de la clé API.
+
+![Configuration](docs/screenshots/01-config.png)
+
+**2. Détection** — sélection d'une PR ouverte et diff des clés nouvelles ou modifiées.
+
+![Détection des clés](docs/screenshots/02-detection.png)
+
+**3. Revue & PR** — relecture/édition des traductions générées avant ouverture de la pull request.
+
+![Revue et édition](docs/screenshots/03-review.png)
+
+---
+
 ## 🚀 Fonctionnalités
 
 - 🔍 **Explorateur de PR** — liste les Pull Requests ouvertes du dépôt cible.
