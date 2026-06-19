@@ -11,6 +11,9 @@ const nameOf = (code: string) => displayNames.value.of(code) ?? code
 
 const isOn = (code: string) => selected.value.includes(code)
 
+const allSelected = computed(() => selected.value.length === LANGUAGE_CATALOG.length)
+const noneSelected = computed(() => selected.value.length === 0)
+
 const toggle = (code: string) => {
 	selected.value = isOn(code)
 		? selected.value.filter((c) => c !== code)
@@ -31,21 +34,38 @@ const clearAll = () => {
 			<span class="text-sm text-slate-500 dark:text-slate-400">
 				{{ t('languagePicker.count', { count: selected.length }, selected.length) }}
 			</span>
-			<div class="flex gap-1.5">
-				<UButton
-					size="xs"
-					color="neutral"
-					variant="outline"
-					:label="t('languagePicker.selectAll')"
+			<div
+				class="inline-flex items-center overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-white/10 dark:bg-slate-900"
+			>
+				<button
+					type="button"
+					:disabled="allSelected"
+					class="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium transition enabled:hover:bg-emerald-50 enabled:hover:text-emerald-600 disabled:opacity-40 dark:enabled:hover:bg-emerald-500/10"
+					:class="
+						allSelected
+							? 'text-slate-400'
+							: 'text-slate-600 dark:text-slate-300'
+					"
 					@click="selectAll"
-				/>
-				<UButton
-					size="xs"
-					color="neutral"
-					variant="ghost"
-					:label="t('languagePicker.clearAll')"
+				>
+					<UIcon name="i-heroicons-check-circle" class="size-4" />
+					{{ t('languagePicker.selectAll') }}
+				</button>
+				<span class="h-4 w-px bg-slate-200 dark:bg-white/10" />
+				<button
+					type="button"
+					:disabled="noneSelected"
+					class="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium transition enabled:hover:bg-slate-100 enabled:hover:text-slate-900 disabled:opacity-40 dark:enabled:hover:bg-white/5 dark:enabled:hover:text-white"
+					:class="
+						noneSelected
+							? 'text-slate-400'
+							: 'text-slate-600 dark:text-slate-300'
+					"
 					@click="clearAll"
-				/>
+				>
+					<UIcon name="i-heroicons-x-mark" class="size-4" />
+					{{ t('languagePicker.clearAll') }}
+				</button>
 			</div>
 		</div>
 
