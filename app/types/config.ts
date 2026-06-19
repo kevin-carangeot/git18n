@@ -26,6 +26,12 @@ export const LANGUAGE_CATALOG: LanguageOption[] = [
 	{ code: 'pl', flag: '🇵🇱' },
 	{ code: 'ru', flag: '🇷🇺' },
 	{ code: 'ro', flag: '🇷🇴' },
+	{ code: 'uk', flag: '🇺🇦' },
+	{ code: 'cs', flag: '🇨🇿' },
+	{ code: 'el', flag: '🇬🇷' },
+	{ code: 'sv', flag: '🇸🇪' },
+	{ code: 'da', flag: '🇩🇰' },
+	{ code: 'fi', flag: '🇫🇮' },
 ]
 
 export const EMPTY_CONFIG: GitConfig = {

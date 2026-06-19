@@ -5,7 +5,9 @@
 		"reset": "Réinitialiser",
 		"copy": "Copier",
 		"backToConfig": "Retour à la config",
-		"language": "Langue"
+		"language": "Langue",
+		"next": "Suivant",
+		"previous": "Précédent"
 	},
 	"header": {
 		"settingsAria": "Paramètres"
@@ -14,13 +16,12 @@
 		"badge": "Traduction par IA",
 		"titleLine1": "Traduisez chaque PR",
 		"titleLine2": "en un seul clic.",
-		"subtitle": "git18n repère vos nouvelles clés i18n, les traduit par l'IA en {count} langues et vous prépare une pull request prête à merger.",
+		"subtitle": "Grâce à l'IA, git18n repère et traduit automatiquement vos nouvelles clés i18n pour vous livrer jusqu'à {count} langues dans une pull request prête à merger.",
 		"reviewTitle": "Relire & éditer",
-		"editorMode": "Mode éditeur"
+		"editorMode": "Mode éditeur",
+		"configCta": "Commencez par configurer votre projet"
 	},
 	"configForm": {
-		"sectionLabel": "Configuration",
-		"sectionHint": "Connectez votre dépôt avant de commencer",
 		"credentialsNote": "Vos identifiants restent dans ce navigateur et ne sont envoyés au serveur que le temps de chaque requête.",
 		"repoUrlLabel": "URL du dépôt GitHub",
 		"folderLabel": "Dossier de traductions",
@@ -29,11 +30,18 @@
 		"savedTitle": "Enregistré",
 		"savedDescription": "Configuration stockée localement.",
 		"resetTitle": "Réinitialisé",
-		"resetDescription": "Configuration effacée."
+		"resetDescription": "Configuration effacée.",
+		"incomplete": "À compléter : {sections}",
+		"complete": "Configuration complète"
+	},
+	"configSteps": {
+		"repoTitle": "Dépôt GitHub",
+		"languagesTitle": "Langues",
+		"apiKeyTitle": "Clé API"
 	},
 	"languagePicker": {
 		"title": "Langues à traduire",
-		"count": "{count} langues sélectionnées",
+		"count": "{count} langue sélectionnée | {count} langues sélectionnées",
 		"selectAll": "Tout cocher",
 		"clearAll": "Tout décocher",
 		"source": "Source",

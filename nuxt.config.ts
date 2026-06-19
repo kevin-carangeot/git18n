@@ -9,6 +9,7 @@ export default defineNuxtConfig({
 	},
 	modules: ['@nuxt/ui', '@nuxt/eslint', '@nuxt/fonts', '@nuxtjs/i18n'],
 	i18n: {
+		vueI18n: 'i18n.config.ts',
 		locales: [
 			{ code: 'fr', name: 'Français', file: 'fr.json' },
 			{ code: 'en', name: 'English', file: 'en.json' },

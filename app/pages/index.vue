@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { LANGUAGE_CATALOG } from '~/types/config'
+
 const { config: gitConfig, isConfigured } = useGitConfig()
 const { $api } = useNuxtApp()
 const toast = useToast()
@@ -199,11 +201,11 @@ const resetView = () => {
 					</span>
 				</h1>
 				<p class="mx-auto mt-3 max-w-md text-base text-slate-500 dark:text-slate-400">
-					{{ t('home.subtitle', { count: gitConfig.targetLanguages.length }) }}
+					{{ t('home.subtitle', { count: LANGUAGE_CATALOG.length }) }}
 				</p>
 			</div>
 
-			<ConfigForm v-if="!isConfigured" />
+			<ConfigWizard v-if="!isConfigured" />
 
 			<template v-else>
 				<ConfigSelector
