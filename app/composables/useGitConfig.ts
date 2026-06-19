@@ -24,7 +24,8 @@ export const useGitConfig = () => {
 			config.value.repoUrl &&
 				config.value.translationFolder &&
 				config.value.githubToken &&
-				config.value.geminiApiKey
+				config.value.geminiApiKey &&
+				config.value.targetLanguages.length >= 1
 		)
 	)
 
