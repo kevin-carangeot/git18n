@@ -39,7 +39,7 @@ const onSave = () => {
 	>
 		<div class="p-5">
 			<p
-				class="mb-5 text-center text-sm font-semibold text-emerald-700 dark:text-emerald-400"
+				class="mb-5 text-center text-xl font-bold text-emerald-700 dark:text-emerald-400"
 			>
 				{{ t('home.configCta') }}
 			</p>
