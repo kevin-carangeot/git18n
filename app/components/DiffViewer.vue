@@ -16,7 +16,7 @@ const computeDiffParts = (oldText: unknown, newText: unknown): DiffSegment[] =>
 </script>
 
 <template>
-	<div class="font-mono text-[13px] leading-7 whitespace-pre">
+	<div class="font-mono text-[13px] leading-5 whitespace-pre">
 		<div v-for="(value, key) in data" :key="key">
 			<div
 				v-if="typeof value === 'object' && !value.status"
@@ -29,15 +29,12 @@ const computeDiffParts = (oldText: unknown, newText: unknown): DiffSegment[] =>
 
 			<div
 				v-else-if="value.status === 'modified'"
-				class="pl-4 border-l-2 border-emerald-400 bg-emerald-50/40 dark:bg-emerald-900/10 py-1"
+				class="pl-4 border-l-2 border-emerald-400 bg-emerald-50/40 dark:bg-emerald-900/10"
 			>
 				<span class="text-emerald-700 dark:text-emerald-400">"{{ key }}"</span>:
 				<span class="text-gray-600 dark:text-gray-400">"</span>
 				<span>
-					<template
-						v-for="(part, i) in computeDiffParts(value.old, value.new)"
-						:key="i"
-					>
+					<template v-for="(part, i) in computeDiffParts(value.old, value.new)" :key="i">
 						<span
 							v-if="part.type === 'added'"
 							class="text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/40 font-bold px-1 rounded-sm"
@@ -56,7 +53,7 @@ const computeDiffParts = (oldText: unknown, newText: unknown): DiffSegment[] =>
 
 			<div
 				v-else-if="value.status === 'added'"
-				class="pl-4 border-l-2 border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/10 py-1"
+				class="pl-4 border-l-2 border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/10"
 			>
 				<span class="text-emerald-700 dark:text-emerald-400 font-bold">"{{ key }}"</span>:
 				<span class="text-emerald-600">"{{ value.val }}",</span>
