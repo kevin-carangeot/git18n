@@ -21,8 +21,6 @@
 		"editorMode": "Editor mode"
 	},
 	"configForm": {
-		"sectionLabel": "Configuration",
-		"sectionHint": "Connect your repository before starting",
 		"credentialsNote": "Your credentials stay in this browser and are only sent to the server for the duration of each request.",
 		"repoUrlLabel": "GitHub repository URL",
 		"folderLabel": "Translation folder",
