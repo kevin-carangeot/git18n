@@ -144,8 +144,7 @@ const createPullRequest = async () => {
 			title: t('toast.prCreatedTitle'),
 			color: 'success',
 			icon: 'i-heroicons-check-badge',
-			timeout: 5000,
-			callback: () => window.open(response.url, '_blank'),
+			duration: 5000,
 		})
 		window.open(response.url, '_blank')
 	} catch (err: unknown) {
