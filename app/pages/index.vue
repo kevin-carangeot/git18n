@@ -203,7 +203,7 @@ const resetView = () => {
 				</p>
 			</div>
 
-			<ConfigForm v-if="!isConfigured" />
+			<ConfigWizard v-if="!isConfigured" />
 
 			<template v-else>
 				<ConfigSelector
