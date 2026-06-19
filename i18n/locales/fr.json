@@ -16,7 +16,7 @@
 		"badge": "Traduction par IA",
 		"titleLine1": "Traduisez chaque PR",
 		"titleLine2": "en un seul clic.",
-		"subtitle": "git18n repère vos nouvelles clés i18n et les traduit automatiquement par l'IA — jusqu'à {count} langues — dans une pull request prête à merger.",
+		"subtitle": "Grâce à l'IA, git18n repère et traduit automatiquement vos nouvelles clés i18n pour vous livrer jusqu'à {count} langues dans une pull request prête à merger.",
 		"reviewTitle": "Relire & éditer",
 		"editorMode": "Mode éditeur",
 		"configCta": "Commencez par configurer votre projet"
