@@ -163,15 +163,27 @@ const resetView = () => {
 </script>
 
 <template>
-	<UContainer class="max-w-[920px] pt-10 pb-14">
-		<div v-if="hasResults" class="mb-10 flex items-center justify-between">
-			<div class="flex items-center gap-2">
-				<h2 class="text-xl font-semibold tracking-tight text-slate-900 dark:text-white">
-					{{ t('home.reviewTitle') }}
-				</h2>
-				<UBadge color="primary" variant="subtle" size="xs">{{
-					t('home.editorMode')
-				}}</UBadge>
+	<UContainer class="max-w-[920px] pt-6 pb-14">
+		<div v-if="hasResults" class="mb-6 flex items-start justify-between gap-4">
+			<div class="flex items-center gap-3">
+				<div
+					class="flex size-11 items-center justify-center rounded-xl bg-emerald-50 ring-1 ring-emerald-100 dark:bg-emerald-500/10 dark:ring-emerald-500/20"
+				>
+					<UIcon
+						name="i-heroicons-pencil-square"
+						class="size-5 text-emerald-600 dark:text-emerald-400"
+					/>
+				</div>
+				<div>
+					<h2
+						class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white"
+					>
+						{{ t('home.reviewTitle') }}
+					</h2>
+					<p class="text-sm text-slate-500 dark:text-slate-400">
+						{{ t('home.reviewSubtitle') }}
+					</p>
+				</div>
 			</div>
 			<UButton
 				icon="i-heroicons-arrow-left"

@@ -18,7 +18,7 @@
 		"titleLine2": "in a single click.",
 		"subtitle": "Powered by AI, git18n spots and automatically translates your new i18n keys to deliver up to {count} languages in a pull request ready to merge.",
 		"reviewTitle": "Review & edit",
-		"editorMode": "Editor mode",
+		"reviewSubtitle": "Check the generated translations before opening the pull request.",
 		"configEyebrow": "Configuration"
 	},
 	"configForm": {

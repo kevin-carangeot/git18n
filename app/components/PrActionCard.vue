@@ -32,7 +32,7 @@ const { t } = useI18n()
 			variant="solid"
 			:loading="loading"
 			icon="i-octicon-git-pull-request-24"
-			class="g-shadow-lg cursor-pointer bg-linear-to-r from-emerald-500 to-emerald-700"
+			class="g-shadow-lg shrink-0 cursor-pointer whitespace-nowrap bg-linear-to-r from-emerald-500 to-emerald-700"
 			@click="emit('create')"
 		>
 			{{ t('prAction.create') }}

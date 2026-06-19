@@ -80,11 +80,11 @@ const copyToClipboard = (content: string) => {
 					<div v-else class="flex h-full flex-col">
 						<UTextarea
 							:model-value="modelValue[item.code]"
-							autoresize
 							:rows="16"
 							color="neutral"
 							variant="outline"
 							class="w-full flex-1 font-mono text-xs"
+							:ui="{ base: 'h-full resize-none' }"
 							placeholder="{ ... }"
 							@update:model-value="(val) => updateTranslation(item.code, val)"
 						/>
