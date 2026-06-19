@@ -1,5 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
-import { buildTranslationPrompt } from '~~/server/utils/prompt'
+import { translateContent } from '~~/server/services/gemini'
 import { getGitConfig } from '~~/server/utils/git-config'
 
 export default defineEventHandler(async (event) => {
@@ -10,19 +9,8 @@ export default defineEventHandler(async (event) => {
 	if (!content || !targetLang)
 		throw createError({ statusCode: 400, statusMessage: 'Missing content or targetLang' })
 
-	const genAI = new GoogleGenerativeAI(geminiApiKey)
-
-	const model = genAI.getGenerativeModel({
-		model: 'gemini-2.5-flash-lite',
-		generationConfig: { responseMimeType: 'application/json', temperature: 0 },
-	})
-
-	const prompt = buildTranslationPrompt(content, targetLang)
-
 	try {
-		const result = await model.generateContent(prompt)
-		const responseText = result.response.text()
-		return JSON.parse(responseText)
+		return await translateContent(geminiApiKey, content, targetLang)
 	} catch (error) {
 		console.error('Erreur Gemini:', error)
 		throw createError({ statusCode: 502, statusMessage: 'Erreur IA' })
