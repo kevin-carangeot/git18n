@@ -1,38 +1,50 @@
 <script setup lang="ts">
-import { EMPTY_CONFIG, type GitConfig } from '~/types/config'
-
-const emit = defineEmits<{ saved: [] }>()
-
-const { config, save, reset } = useGitConfig()
+const { form, repoUrlValid, repoValid, languagesValid, apiKeyValid, canSave, save, reset } =
+	useConfigForm()
 const toast = useToast()
 const { t } = useI18n()
 
-const form = reactive<GitConfig>({ ...EMPTY_CONFIG, ...config.value })
+const active = ref('repo')
 
-const repoUrlValid = computed(() => /github\.com\/[^/]+\/[^/]+/.test(form.repoUrl))
-const canSave = computed(
-	() =>
-		repoUrlValid.value &&
-		Boolean(form.translationFolder.trim()) &&
-		Boolean(form.githubToken.trim()) &&
-		Boolean(form.geminiApiKey.trim()) &&
-		form.targetLanguages.length > 0
+const tabs = computed(() => [
+	{ label: t('configSteps.repoTitle'), icon: 'i-octicon-mark-github-16', slot: 'repo', value: 'repo' },
+	{
+		label: t('configSteps.languagesTitle'),
+		icon: 'i-heroicons-language',
+		slot: 'languages',
+		value: 'languages',
+	},
+	{ label: t('configSteps.apiKeyTitle'), icon: 'i-heroicons-key', slot: 'apiKey', value: 'apiKey' },
+])
+
+const validByValue = computed<Record<string, boolean>>(() => ({
+	repo: repoValid.value,
+	languages: languagesValid.value,
+	apiKey: apiKeyValid.value,
+}))
+
+const missingSections = computed(() =>
+	[
+		{ valid: repoValid.value, label: t('configSteps.repoTitle') },
+		{ valid: languagesValid.value, label: t('configSteps.languagesTitle') },
+		{ valid: apiKeyValid.value, label: t('configSteps.apiKeyTitle') },
+	]
+		.filter((s) => !s.valid)
+		.map((s) => s.label)
+		.join(', ')
 )
 
 const onSave = () => {
-	if (!canSave.value) return
-	save({ ...form })
+	if (!save()) return
 	toast.add({
 		title: t('configForm.savedTitle'),
 		description: t('configForm.savedDescription'),
 		color: 'success',
 	})
-	emit('saved')
 }
 
 const onReset = () => {
 	reset()
-	Object.assign(form, EMPTY_CONFIG)
 	toast.add({
 		title: t('configForm.resetTitle'),
 		description: t('configForm.resetDescription'),
@@ -45,59 +57,61 @@ const onReset = () => {
 	<div
 		class="g-shadow-md overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-white/10 dark:bg-slate-900"
 	>
-		<div class="flex items-center gap-3.5 p-[18px_20px]">
-			<div
-				class="grid size-10 flex-none place-items-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10"
-			>
-				<UIcon name="i-heroicons-key" class="size-[18px]" />
-			</div>
-			<div class="flex min-w-0 flex-1 flex-col gap-0.5">
-				<span class="text-[10.5px] font-bold uppercase tracking-[0.08em] text-slate-400">
-					{{ t('configForm.sectionLabel') }}
-				</span>
-				<span class="text-[13.5px] font-medium text-slate-700 dark:text-slate-200">
-					{{ t('configForm.sectionHint') }}
-				</span>
-			</div>
-		</div>
+		<UTabs v-model="active" :items="tabs" class="w-full" :ui="{ list: 'px-2 pt-2' }">
+			<template #trailing="{ item }">
+				<UIcon
+					v-if="validByValue[item.value]"
+					name="i-heroicons-check-circle-solid"
+					class="size-4 text-emerald-500"
+				/>
+				<span v-else class="size-2 rounded-full bg-amber-500" />
+			</template>
+
+			<template #repo>
+				<div class="space-y-4 p-5">
+					<p class="text-xs text-slate-500 dark:text-slate-400">
+						{{ t('configForm.credentialsNote') }}
+					</p>
+					<RepoFields
+						v-model:repo-url="form.repoUrl"
+						v-model:translation-folder="form.translationFolder"
+						v-model:github-token="form.githubToken"
+						:repo-url-valid="repoUrlValid"
+					/>
+				</div>
+			</template>
+
+			<template #languages>
+				<div class="p-5">
+					<LanguagePicker v-model="form.targetLanguages" />
+				</div>
+			</template>
+
+			<template #apiKey>
+				<div class="p-5">
+					<ApiKeyField v-model="form.geminiApiKey" />
+				</div>
+			</template>
+		</UTabs>
 
 		<USeparator />
 
-		<div class="space-y-4 p-5">
-			<p class="text-xs text-slate-500 dark:text-slate-400">
-				{{ t('configForm.credentialsNote') }}
-			</p>
-
-			<UFormField :label="t('configForm.repoUrlLabel')" required>
-				<UInput
-					v-model="form.repoUrl"
-					placeholder="https://github.com/owner/repo"
-					:color="form.repoUrl && !repoUrlValid ? 'error' : undefined"
-					class="w-full"
+		<div class="flex items-center justify-between gap-3 p-5">
+			<div
+				class="flex items-center gap-1.5 text-xs"
+				:class="canSave ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'"
+			>
+				<UIcon
+					:name="canSave ? 'i-heroicons-check-circle' : 'i-heroicons-exclamation-circle'"
+					class="size-4"
 				/>
-			</UFormField>
-
-			<UFormField :label="t('configForm.folderLabel')" required>
-				<UInput
-					v-model="form.translationFolder"
-					placeholder="ui/src/lang/json/"
-					class="w-full"
-				/>
-			</UFormField>
-
-			<UFormField :label="t('configForm.githubTokenLabel')" required>
-				<UInput v-model="form.githubToken" placeholder="ghp_…" class="w-full" />
-			</UFormField>
-
-			<UFormField :label="t('configForm.geminiKeyLabel')" required>
-				<UInput v-model="form.geminiApiKey" placeholder="AIza…" class="w-full" />
-			</UFormField>
-
-			<UFormField :label="t('languagePicker.title')" required>
-				<LanguagePicker v-model="form.targetLanguages" />
-			</UFormField>
-
-			<div class="flex items-center gap-3 pt-1">
+				<span>{{
+					canSave
+						? t('configForm.complete')
+						: t('configForm.incomplete', { sections: missingSections })
+				}}</span>
+			</div>
+			<div class="flex items-center gap-3">
 				<UButton :label="t('common.save')" :disabled="!canSave" @click="onSave" />
 				<UButton
 					:label="t('common.reset')"
