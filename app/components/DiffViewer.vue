@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import * as Diff from 'diff'
+import type { DiffTree } from '~~/server/utils/diff'
 
 defineProps<{
-	data: Record<string, unknown>[]
+	data: DiffTree
 }>()
 
-const computeDiffHtml = (oldText: string, newText: string) => {
+const computeDiffHtml = (oldText: unknown, newText: unknown) => {
 	const diff = Diff.diffWordsWithSpace(String(oldText), String(newText))
 
 	return diff
