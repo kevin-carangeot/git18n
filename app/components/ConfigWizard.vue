@@ -38,6 +38,12 @@ const onSave = () => {
 		class="g-shadow-md overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-white/10 dark:bg-slate-900"
 	>
 		<div class="p-5">
+			<p
+				class="mb-5 text-center text-sm font-semibold text-emerald-700 dark:text-emerald-400"
+			>
+				{{ t('home.configCta') }}
+			</p>
+
 			<UStepper v-model="currentStep" :items="steps" linear>
 				<template #repo>
 					<div class="space-y-4">
