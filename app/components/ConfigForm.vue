@@ -117,14 +117,24 @@ const onReset = () => {
 						: t('configForm.incomplete', { sections: missingSections })
 				}}</span>
 			</div>
-			<div class="flex items-center gap-3">
+			<div class="flex items-center gap-2">
 				<UButton
 					:label="t('common.reset')"
+					icon="i-heroicons-arrow-path"
 					color="neutral"
 					variant="ghost"
+					size="md"
+					class="rounded-lg font-medium"
 					@click="onReset"
 				/>
-				<UButton :label="t('common.save')" :disabled="!canSave" @click="onSave" />
+				<UButton
+					:label="t('common.save')"
+					icon="i-heroicons-check"
+					:disabled="!canSave"
+					size="md"
+					class="rounded-lg px-4 font-semibold shadow-sm transition enabled:hover:shadow-md enabled:hover:shadow-emerald-500/20"
+					@click="onSave"
+				/>
 			</div>
 		</div>
 	</div>
