@@ -58,9 +58,7 @@ const onSave = () => {
 </script>
 
 <template>
-	<div
-		class="g-shadow-md overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-white/10 dark:bg-slate-900"
-	>
+	<AppCard>
 		<div class="p-5">
 			<div class="mb-5">
 				<p
@@ -120,5 +118,5 @@ const onSave = () => {
 			/>
 			<UButton v-else :label="t('common.save')" :disabled="!canSave" @click="onSave" />
 		</div>
-	</div>
+	</AppCard>
 </template>

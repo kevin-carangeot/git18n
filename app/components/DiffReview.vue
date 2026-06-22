@@ -37,9 +37,7 @@ const { t } = useI18n()
 			</div>
 
 			<div v-else class="space-y-5">
-				<div
-					class="g-shadow-md overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-white/10 dark:bg-slate-900"
-				>
+				<AppCard>
 					<div
 						class="flex items-center justify-between border-b border-slate-200 bg-slate-50/60 px-4.5 py-3 dark:border-white/10 dark:bg-white/5"
 					>
@@ -58,7 +56,7 @@ const { t } = useI18n()
 					<div class="max-h-64 overflow-auto p-4">
 						<DiffViewer :data="diffData.visualDiff" />
 					</div>
-				</div>
+				</AppCard>
 
 				<UButton
 					block
