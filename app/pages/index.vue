@@ -40,7 +40,7 @@ const resultTabs = computed(() =>
 </script>
 
 <template>
-	<UContainer class="max-w-[920px] pt-6 pb-14">
+	<UContainer class="max-w-230 pt-6 pb-14">
 		<div v-if="hasResults" class="mb-6 flex items-start justify-between gap-4">
 			<div class="flex items-center gap-3">
 				<IconBadge
