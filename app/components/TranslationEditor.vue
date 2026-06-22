@@ -16,6 +16,16 @@ const updateTranslation = (lang: string, value: string) => {
 	emit('update:modelValue', newValue)
 }
 
+const isValidJson = (content: string | undefined): boolean => {
+	if (!content?.trim()) return false
+	try {
+		JSON.parse(content)
+		return true
+	} catch {
+		return false
+	}
+}
+
 const copyToClipboard = (content: string) => {
 	navigator.clipboard.writeText(content)
 	toast.add({
@@ -91,9 +101,31 @@ const copyToClipboard = (content: string) => {
 						<div
 							class="mt-3 flex items-center justify-between border-t border-slate-200 pt-3 dark:border-white/10"
 						>
-							<span class="flex items-center gap-1 text-[10px] text-slate-400">
-								<UIcon name="i-heroicons-check-circle" class="text-emerald-500" />
-								{{ t('translationEditor.validJson') }}
+							<span
+								class="flex items-center gap-1 text-[10px]"
+								:class="
+									isValidJson(modelValue[item.code])
+										? 'text-slate-400'
+										: 'text-red-500 dark:text-red-400'
+								"
+							>
+								<UIcon
+									:name="
+										isValidJson(modelValue[item.code])
+											? 'i-heroicons-check-circle'
+											: 'i-heroicons-exclamation-circle'
+									"
+									:class="
+										isValidJson(modelValue[item.code])
+											? 'text-emerald-500'
+											: 'text-red-500'
+									"
+								/>
+								{{
+									isValidJson(modelValue[item.code])
+										? t('translationEditor.validJson')
+										: t('translationEditor.invalidJson')
+								}}
 							</span>
 							<UButton
 								size="xs"

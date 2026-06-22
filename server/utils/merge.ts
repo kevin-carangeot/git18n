@@ -1,4 +1,4 @@
-type JsonObject = Record<string, unknown>
+import type { JsonObject } from '~~/shared/types/json'
 
 const isObject = (item: unknown): item is JsonObject => {
 	return !!item && typeof item === 'object' && !Array.isArray(item)

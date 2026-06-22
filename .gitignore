@@ -18,9 +18,8 @@ logs
 .fleet
 .idea
 
-# Local env files
+# Local env files (config is client-side; no env vars are used at runtime)
 .env
-!.env.example
 
 .superpowers/
 docs/superpowers/

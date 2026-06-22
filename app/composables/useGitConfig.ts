@@ -1,6 +1,7 @@
 import { CONFIG_STORAGE_KEY, EMPTY_CONFIG, type GitConfig } from '~/types/config'
 
 const config = ref<GitConfig>({ ...EMPTY_CONFIG })
+let localStorageLoaded = false
 
 const read = (): GitConfig => {
 	if (import.meta.server) return { ...EMPTY_CONFIG }
@@ -41,5 +42,3 @@ export const useGitConfig = () => {
 
 	return { config, isConfigured, save, reset }
 }
-
-let localStorageLoaded = false

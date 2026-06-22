@@ -29,7 +29,7 @@ Nuxt 4 (SPA — `ssr: false`), Vue 3 `<script setup>`, Nuxt UI 4, `@nuxtjs/i18n`
 
 ### Credentials live client-side, travel as headers
 
-There are **no server-side secrets**. The user enters GitHub URL/token/folder and Gemini key into a config form; it's persisted to `localStorage` (`useGitConfig`, key `git18n-config`). The `app/plugins/api.ts` plugin wraps `$fetch` as `$api` and injects those values as `x-git18n-*` headers on every request. Server routes read them via `server/utils/git-config.ts` (`getGitConfig`), which also parses owner/repo out of the URL. **Always call server APIs through `useNuxtApp().$api`** — a plain `$fetch`/`useFetch` won't carry the credentials. The `.env.example` vars are legacy/reference only; runtime config comes from the headers.
+There are **no server-side secrets**. The user enters GitHub URL/token/folder and Gemini key into a config form; it's persisted to `localStorage` (`useGitConfig`, key `git18n-config`). The `app/plugins/api.ts` plugin wraps `$fetch` as `$api` and injects those values as `x-git18n-*` headers on every request. Server routes read them via `server/utils/git-config.ts` (`getGitConfig`), which also parses owner/repo out of the URL. **Always call server APIs through `useNuxtApp().$api`** — a plain `$fetch`/`useFetch` won't carry the credentials. There are no `.env` files: all runtime config comes from the headers.
 
 ### Server routes (`server/api/`) are thin GitHub/Gemini proxies
 

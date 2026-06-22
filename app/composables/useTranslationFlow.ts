@@ -48,35 +48,42 @@ export const useTranslationFlow = () => {
 		if (!diffData.value || diffData.value.count === 0) return
 		isTranslating.value = true
 		const languages = config.value.targetLanguages
+		const { diff: contentToTranslate, indentation } = diffData.value
 
 		languages.forEach((lang) => {
 			loadingStatus.value[lang] = true
 			editableTranslations.value[lang] = ''
 		})
 
-		try {
-			const contentToTranslate = diffData.value.diff
-			for (const lang of languages) {
-				if (languages.indexOf(lang) > 0) await new Promise((r) => setTimeout(r, 500))
-				const translatedJson = await $api<Record<string, unknown>>('/api/translate', {
-					method: 'POST',
-					body: { content: contentToTranslate, targetLang: lang },
-				})
-				editableTranslations.value[lang] = JSON.stringify(
-					translatedJson,
-					null,
-					diffData.value.indentation
-				)
-				loadingStatus.value[lang] = false
-			}
+		// Languages translate concurrently; each tab resolves independently.
+		const results = await Promise.allSettled(
+			languages.map(async (lang) => {
+				try {
+					const translatedJson = await $api<Record<string, unknown>>('/api/translate', {
+						method: 'POST',
+						body: { content: contentToTranslate, targetLang: lang },
+					})
+					editableTranslations.value[lang] = JSON.stringify(
+						translatedJson,
+						null,
+						indentation
+					)
+				} finally {
+					loadingStatus.value[lang] = false
+				}
+			})
+		)
+
+		isTranslating.value = false
+
+		const failed = results.filter((r) => r.status === 'rejected')
+		if (failed.length > 0) {
+			failed.forEach((r) => console.error(r.reason))
+			notify.error(t('toast.errorTitle'), { description: t('toast.translationFailed') })
+		} else {
 			notify.success(t('toast.successTitle'), {
 				description: t('toast.translationsGenerated'),
 			})
-		} catch (err: unknown) {
-			console.error(err)
-			notify.error(t('toast.errorTitle'), { description: t('toast.translationFailed') })
-		} finally {
-			isTranslating.value = false
 		}
 	}
 
@@ -98,7 +105,9 @@ export const useTranslationFlow = () => {
 			if (Object.keys(translationsPayload).length === 0)
 				throw new Error(t('toast.noTranslations'))
 
-			const response = await $api('/api/create-pr', {
+			// The translation PR targets the selected PR's own branch (its head ref):
+			// new keys are added straight onto that feature branch, not the repo default.
+			const response = await $api<{ success: boolean; url: string }>('/api/create-pr', {
 				method: 'POST',
 				body: {
 					baseBranch: diffData.value?.headBranch || selectedPull.value,

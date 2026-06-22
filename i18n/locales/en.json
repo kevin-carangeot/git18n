@@ -69,7 +69,8 @@
 		"base": "Base:",
 		"addingKeys": "Adding +{count} keys to {files} files",
 		"generating": "Generating {lang}...",
-		"validJson": "Valid JSON required",
+		"validJson": "Valid JSON",
+		"invalidJson": "Invalid JSON",
 		"copied": "Copied!"
 	},
 	"prAction": {
