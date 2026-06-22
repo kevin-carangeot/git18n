@@ -13,7 +13,7 @@ export const buildTranslationPrompt = (
     - Reste fidèle au registre et au ton de la langue source ; n'impose aucun registre particulier.
     - Privilégie une traduction naturelle et idiomatique dans la langue cible plutôt qu'un calque mot à mot.
     - Boutons/CTA : formulation courte et directe, adaptée aux conventions UI de la langue cible.
-    - Reste cohérent avec les valeurs déjà existantes dans la langue cible (terminologie, ponctuation, capitalisation, apostrophes, accents).
+    - Respecte les conventions de la langue cible (terminologie, ponctuation, capitalisation, apostrophes, accents).
     Éléments à ne pas traduire :
     - Les placeholders {variable} et toute interpolation ({…}, %s, {{…}}, etc.) : conserve-les tels quels, sans en modifier le nom ni l'ordre.
     - Les balises et attributs HTML : ne traduis que le texte visible entre les balises.
@@ -22,18 +22,16 @@ export const buildTranslationPrompt = (
     Rappels techniques :
     - Ne touche pas aux clés ; ne modifie que les valeurs.
     - Conserve tous les placeholders {…} et le HTML intacts.
-    - Si une valeur existe déjà dans la langue cible, harmonise-la mais ne la paraphrase pas inutilement.
     - Conserve la ponctuation, les espaces insécables éventuels, la casse et les unités telles quelles.
     - N'ajoute aucune phrase hors JSON (pas de pré/postambule).
     Plan d'action :
     1) Charger la valeur source (anglaise).
-    2) Vérifier s'il existe déjà une valeur dans la langue cible ; l'harmoniser le cas échéant.
-    3) Traduire de façon naturelle en respectant les règles ci-dessus.
-    4) Relire pour : a) placeholders intacts, b) HTML intact, c) grammaire/accords corrects, d) aucune clé en double ou manquante.
+    2) Traduire de façon naturelle en respectant les règles ci-dessus.
+    3) Relire pour : a) placeholders intacts, b) HTML intact, c) grammaire/accords corrects, d) aucune clé en double ou manquante.
     Checklist finale :
-    - Toutes les clés de 'en.json' sont présentes dans la langue cible.
+    - Toutes les clés du contenu source sont présentes dans la sortie.
     - Placeholders et HTML intacts.
-    - Aucune paraphrase superflue ; cohérence avec l'existant.
+    - Aucune paraphrase superflue.
     - Format : JSON valide uniquement (aucun texte hors JSON), ponctuation/espaces/casse conformes à la langue cible.
 
     CONTENU À TRADUIRE (JSON) :

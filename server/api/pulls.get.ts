@@ -1,25 +1,12 @@
+import { createGitHubClient } from '~~/server/services/github'
 import { getGitConfig } from '~~/server/utils/git-config'
-
-interface GitHubPull {
-	title: string
-	head: { ref: string }
-}
 
 export default defineEventHandler(async (event) => {
 	const { owner, repo, token } = getGitConfig(event)
+	const client = createGitHubClient({ owner, repo, token })
 
 	try {
-		const pulls = await $fetch<GitHubPull[]>(
-			`https://api.github.com/repos/${owner}/${repo}/pulls`,
-			{
-				headers: {
-					Authorization: `Bearer ${token}`,
-					'X-GitHub-Api-Version': '2022-11-28',
-				},
-				query: { per_page: 100 },
-			}
-		)
-
+		const pulls = await client.listPulls()
 		return pulls.map((pull) => ({
 			label: pull.title,
 			value: pull.head.ref,

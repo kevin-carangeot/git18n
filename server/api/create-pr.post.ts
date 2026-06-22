@@ -4,7 +4,7 @@ import { getGitConfig } from '~~/server/utils/git-config'
 interface CreatePrBody {
 	translations: Record<string, Record<string, unknown>>
 	baseBranch: string
-	indentation?: number
+	indentation?: string | number
 }
 
 export default defineEventHandler(async (event) => {

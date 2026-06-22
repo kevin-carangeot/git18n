@@ -8,6 +8,17 @@ defineProps<{
 
 type DiffSegment = { value: string; type: 'added' | 'removed' | 'common' }
 
+const isObjVal = (v: unknown): boolean => v !== null && typeof v === 'object'
+
+// A leaf can switch type (a nested group collapsed into a single string, or the
+// reverse). Word-diffing the two makes no sense, so such leaves are rendered as
+// a stacked old/new pair instead; nested values are shown collapsed.
+const display = (v: unknown): string => {
+	if (Array.isArray(v)) return '[ … ]'
+	if (isObjVal(v)) return '{ … }'
+	return `"${String(v)}"`
+}
+
 const computeDiffParts = (oldText: unknown, newText: unknown): DiffSegment[] =>
 	Diff.diffWordsWithSpace(String(oldText), String(newText)).map((part) => ({
 		value: part.value,
@@ -28,8 +39,28 @@ const computeDiffParts = (oldText: unknown, newText: unknown): DiffSegment[] =>
 			</div>
 
 			<div
+				v-else-if="
+					value.status === 'modified' && (isObjVal(value.old) || isObjVal(value.new))
+				"
+			>
+				<div
+					class="pl-4 border-l-2 border-red-400 bg-red-50/60 text-red-500/80 line-through decoration-red-500/40 dark:bg-red-900/15 dark:text-red-400/80"
+				>
+					<span>"{{ key }}"</span>: {{ display(value.old) }}
+				</div>
+				<div
+					class="pl-4 border-l-2 border-emerald-400 bg-emerald-50/60 dark:bg-emerald-900/15"
+				>
+					<span class="text-emerald-700 dark:text-emerald-400">"{{ key }}"</span>:
+					<span class="text-emerald-600 dark:text-emerald-300">
+						{{ display(value.new) }},</span
+					>
+				</div>
+			</div>
+
+			<div
 				v-else-if="value.status === 'modified'"
-				class="pl-4 border-l-2 border-emerald-400 bg-emerald-50/40 dark:bg-emerald-900/10"
+				class="pl-4 border-l-2 border-red-400 bg-red-50/40 dark:bg-red-900/10"
 			>
 				<span class="text-emerald-700 dark:text-emerald-400">"{{ key }}"</span>:
 				<span class="text-gray-600 dark:text-gray-400">"</span>

@@ -1,4 +1,4 @@
-type JsonObject = Record<string, unknown>
+import type { JsonObject } from '~~/shared/types/json'
 
 export interface DiffAdded {
 	status: 'added'
@@ -43,7 +43,10 @@ export const calculateDetailedDiff = (base: unknown, current: unknown): DiffTree
 
 	for (const key in current) {
 		if (!Object.prototype.hasOwnProperty.call(base, key)) {
-			diff[key] = { status: 'added', val: current[key] }
+			// A whole nested group can be added at once: recurse so each leaf is
+			// tagged 'added' individually, keeping the diff tree renderable.
+			const val = current[key]
+			diff[key] = isObject(val) ? calculateDetailedDiff({}, val) : { status: 'added', val }
 		} else if (isObject(base[key]) && isObject(current[key])) {
 			const nested = calculateDetailedDiff(base[key], current[key])
 			if (Object.keys(nested).length > 0) diff[key] = nested

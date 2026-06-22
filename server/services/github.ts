@@ -1,12 +1,16 @@
 import { merge } from '~~/server/utils/merge'
 import { localeFilePath } from '~~/shared/utils/locale-path'
-
-type JsonObject = Record<string, unknown>
+import type { JsonObject } from '~~/shared/types/json'
 
 interface GitHubClientOptions {
 	owner: string
 	repo: string
 	token: string
+}
+
+export interface GitHubPull {
+	title: string
+	head: { ref: string }
 }
 
 const buildHeaders = (token: string) => ({
@@ -16,11 +20,37 @@ const buildHeaders = (token: string) => ({
 	'User-Agent': 'Nuxt-i18n-App',
 })
 
+const isNotFound = (err: unknown): boolean =>
+	!!err && typeof err === 'object' && 'statusCode' in err && err.statusCode === 404
+
 export const createGitHubClient = ({ owner, repo, token }: GitHubClientOptions) => {
 	const apiBase = `https://api.github.com/repos/${owner}/${repo}`
 	const headers = buildHeaders(token)
 
 	return {
+		async getRepo(): Promise<{ default_branch: string }> {
+			return $fetch<{ default_branch: string }>(apiBase, { headers })
+		},
+
+		async listPulls(): Promise<GitHubPull[]> {
+			return $fetch<GitHubPull[]>(`${apiBase}/pulls`, { headers, query: { per_page: 100 } })
+		},
+
+		// Returns the raw file text, or null only when the file genuinely does
+		// not exist (404). Any other error propagates instead of being masked.
+		async getFileRaw(path: string, ref: string): Promise<string | null> {
+			try {
+				return await $fetch<string>(`${apiBase}/contents/${path}`, {
+					headers: { ...headers, Accept: 'application/vnd.github.raw' },
+					query: { ref },
+					responseType: 'text',
+				})
+			} catch (err) {
+				if (isNotFound(err)) return null
+				throw err
+			}
+		},
+
 		async getBranchSha(branch: string): Promise<string> {
 			const ref = await $fetch<{ object: { sha: string } }>(
 				`${apiBase}/git/ref/heads/${branch}`,
@@ -48,8 +78,9 @@ export const createGitHubClient = ({ owner, repo, token }: GitHubClientOptions) 
 				)
 				const raw = Buffer.from(file.content, 'base64').toString('utf-8')
 				return { content: JSON.parse(raw), sha: file.sha }
-			} catch {
-				return null
+			} catch (err) {
+				if (isNotFound(err)) return null
+				throw err
 			}
 		},
 
@@ -95,7 +126,7 @@ export const createTranslationPr = async (params: {
 	folder: string
 	translations: Record<string, JsonObject>
 	baseBranch: string
-	indentation: number
+	indentation: string | number
 }): Promise<string> => {
 	const { owner, repo, token, folder, translations, baseBranch, indentation } = params
 	const client = createGitHubClient({ owner, repo, token })

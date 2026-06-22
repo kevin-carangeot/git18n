@@ -1,6 +1,8 @@
 import { calculateDetailedDiff, flattenDiffTree, countLeaves } from '~~/server/utils/diff'
 import { detectIndentation } from '~~/server/utils/indent'
 import { getGitConfig } from '~~/server/utils/git-config'
+import { createGitHubClient } from '~~/server/services/github'
+import type { JsonObject } from '~~/shared/types/json'
 
 export default defineEventHandler(async (event) => {
 	const { owner, repo, token } = getGitConfig(event)
@@ -12,33 +14,18 @@ export default defineEventHandler(async (event) => {
 	if (!branchName || !filePath)
 		throw createError({ statusCode: 400, statusMessage: 'Missing parameters' })
 
-	const headers = {
-		Authorization: `Bearer ${token}`,
-		'X-GitHub-Api-Version': '2022-11-28',
-		Accept: 'application/vnd.github.raw',
-	}
+	const client = createGitHubClient({ owner, repo, token })
 
 	// Keep the raw text alongside the parsed data so indentation can be detected.
-	const fetchJsonFile = async (
-		ref: string
-	): Promise<{ data: Record<string, unknown>; raw: string }> => {
-		try {
-			const raw = await $fetch<string>(
-				`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`,
-				{ headers, query: { ref }, responseType: 'text' }
-			)
-			return { data: JSON.parse(raw), raw }
-		} catch {
-			return { data: {}, raw: '' }
-		}
+	// A missing file (404) yields an empty object; any other error propagates.
+	const fetchJsonFile = async (ref: string): Promise<{ data: JsonObject; raw: string }> => {
+		const raw = await client.getFileRaw(filePath, ref)
+		if (raw === null) return { data: {}, raw: '' }
+		return { data: JSON.parse(raw), raw }
 	}
 
 	try {
-		const repoInfo = await $fetch<{ default_branch: string }>(
-			`https://api.github.com/repos/${owner}/${repo}`,
-			{ headers: { Authorization: `Bearer ${token}` } }
-		)
-		const baseBranch = repoInfo.default_branch
+		const { default_branch: baseBranch } = await client.getRepo()
 
 		const [head, base] = await Promise.all([
 			fetchJsonFile(branchName),
