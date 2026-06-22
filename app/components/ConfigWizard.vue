@@ -1,33 +1,15 @@
 <script setup lang="ts">
-const { form, repoUrlValid, repoValid, languagesValid, apiKeyValid, canSave, save } =
-	useConfigForm()
-const notify = useNotify()
+const { form, repoUrlValid, sections, canSave, onSave } = useConfigSteps()
 const { t } = useI18n()
 
-const stepValid = computed(() => [repoValid.value, languagesValid.value, apiKeyValid.value])
+const stepValid = computed(() => sections.value.map((s) => s.valid))
 
 const steps = computed(() =>
-	[
-		{
-			title: t('configSteps.repoTitle'),
-			headline: t('configSteps.repoHeadline'),
-			icon: 'i-octicon-mark-github-16',
-			slot: 'repo',
-		},
-		{
-			title: t('configSteps.languagesTitle'),
-			headline: t('configSteps.languagesHeadline'),
-			icon: 'i-heroicons-language',
-			slot: 'languages',
-		},
-		{
-			title: t('configSteps.apiKeyTitle'),
-			headline: t('configSteps.apiKeyHeadline'),
-			icon: 'i-heroicons-key',
-			slot: 'apiKey',
-		},
-	].map((step, index) => ({
-		...step,
+	sections.value.map((s, index) => ({
+		title: s.title,
+		headline: s.headline,
+		icon: s.icon,
+		slot: s.slot,
 		// A step is reachable only once every preceding step is valid,
 		// preventing direct navigation via the stepper header.
 		disabled: stepValid.value.slice(0, index).some((valid) => !valid),
@@ -45,11 +27,6 @@ const next = () => {
 }
 const prev = () => {
 	if (currentStep.value > 0) currentStep.value -= 1
-}
-
-const onSave = () => {
-	if (!save()) return
-	notify.success(t('configForm.savedTitle'), { description: t('configForm.savedDescription') })
 }
 </script>
 

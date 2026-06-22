@@ -1,58 +1,23 @@
 <script setup lang="ts">
-const { form, repoUrlValid, repoValid, languagesValid, apiKeyValid, canSave, save, reset } =
-	useConfigForm()
-const notify = useNotify()
+const { form, repoUrlValid, sections, canSave, onSave, onReset } = useConfigSteps()
 const { t } = useI18n()
 
 const active = ref('repo')
 
-const tabs = computed(() => [
-	{
-		label: t('configSteps.repoTitle'),
-		icon: 'i-octicon-mark-github-16',
-		slot: 'repo',
-		value: 'repo',
-	},
-	{
-		label: t('configSteps.languagesTitle'),
-		icon: 'i-heroicons-language',
-		slot: 'languages',
-		value: 'languages',
-	},
-	{
-		label: t('configSteps.apiKeyTitle'),
-		icon: 'i-heroicons-key',
-		slot: 'apiKey',
-		value: 'apiKey',
-	},
-])
-
-const validByValue = computed<Record<string, boolean>>(() => ({
-	repo: repoValid.value,
-	languages: languagesValid.value,
-	apiKey: apiKeyValid.value,
-}))
-
-const missingSections = computed(() =>
-	[
-		{ valid: repoValid.value, label: t('configSteps.repoTitle') },
-		{ valid: languagesValid.value, label: t('configSteps.languagesTitle') },
-		{ valid: apiKeyValid.value, label: t('configSteps.apiKeyTitle') },
-	]
-		.filter((s) => !s.valid)
-		.map((s) => s.label)
-		.join(', ')
+const tabs = computed(() =>
+	sections.value.map((s) => ({ label: s.title, icon: s.icon, slot: s.slot, value: s.key }))
 )
 
-const onSave = () => {
-	if (!save()) return
-	notify.success(t('configForm.savedTitle'), { description: t('configForm.savedDescription') })
-}
+const validByValue = computed<Record<string, boolean>>(() =>
+	Object.fromEntries(sections.value.map((s) => [s.key, s.valid]))
+)
 
-const onReset = () => {
-	reset()
-	notify.info(t('configForm.resetTitle'), { description: t('configForm.resetDescription') })
-}
+const missingSections = computed(() =>
+	sections.value
+		.filter((s) => !s.valid)
+		.map((s) => s.title)
+		.join(', ')
+)
 </script>
 
 <template>
