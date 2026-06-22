@@ -21,10 +21,10 @@ const toggleLocale = () => {
 		<header
 			class="sticky top-0 z-20 border-b border-slate-200/80 bg-slate-50/70 backdrop-blur-md backdrop-saturate-150 dark:border-white/10 dark:bg-slate-950/60"
 		>
-			<div class="mx-auto flex max-w-[920px] items-center justify-between px-7 py-3.5">
+			<div class="mx-auto flex max-w-230 items-center justify-between px-7 py-3.5">
 				<NuxtLink to="/" class="flex items-center gap-2.5">
 					<span
-						class="grid size-[30px] place-items-center rounded-[9px] bg-gradient-to-br from-emerald-500 to-emerald-700 shadow-sm ring-1 ring-inset ring-white/25"
+						class="grid size-7.5 place-items-center rounded-[9px] bg-linear-to-br from-emerald-500 to-emerald-700 shadow-sm ring-1 ring-inset ring-white/25"
 					>
 						<UIcon name="i-heroicons-language" class="size-4 text-white" />
 					</span>
