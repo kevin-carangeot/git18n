@@ -7,15 +7,9 @@ const { t } = useI18n()
 </script>
 
 <template>
-	<div
-		class="g-shadow-md mt-8 flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-6 dark:border-white/10 dark:bg-slate-900"
-	>
+	<AppCard class="mt-8 flex items-center justify-between p-6">
 		<div class="flex items-center gap-4">
-			<div
-				class="grid size-12 place-items-center rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10"
-			>
-				<UIcon name="i-heroicons-rocket-launch" class="size-6" />
-			</div>
+			<IconBadge icon="i-heroicons-rocket-launch" size="lg" circle />
 			<div>
 				<h3 class="text-lg font-semibold text-slate-900 dark:text-white">
 					{{ t('prAction.title') }}
@@ -37,5 +31,5 @@ const { t } = useI18n()
 		>
 			{{ t('prAction.create') }}
 		</UButton>
-	</div>
+	</AppCard>
 </template>

@@ -64,9 +64,7 @@ const onReset = () => {
 </script>
 
 <template>
-	<div
-		class="g-shadow-md overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-white/10 dark:bg-slate-900"
-	>
+	<AppCard>
 		<UTabs
 			v-model="active"
 			:items="tabs"
@@ -151,5 +149,5 @@ const onReset = () => {
 				/>
 			</div>
 		</div>
-	</div>
+	</AppCard>
 </template>

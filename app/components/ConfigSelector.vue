@@ -19,15 +19,9 @@ const repoDisplay = computed(() => {
 </script>
 
 <template>
-	<div
-		class="g-shadow-md overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-white/10 dark:bg-slate-900"
-	>
+	<AppCard>
 		<div class="flex items-center gap-3.5 p-[18px_20px]">
-			<div
-				class="grid size-10 flex-none place-items-center rounded-xl bg-slate-100 text-slate-500 dark:bg-white/5"
-			>
-				<UIcon name="i-simple-icons-github" class="size-[18px]" />
-			</div>
+			<IconBadge icon="i-simple-icons-github" color="neutral" />
 			<div class="flex min-w-0 flex-1 flex-col gap-0.5">
 				<span class="text-[10.5px] font-bold uppercase tracking-[0.08em] text-slate-400">{{
 					t('configSelector.repository')
@@ -53,11 +47,7 @@ const repoDisplay = computed(() => {
 		<USeparator />
 
 		<div class="flex items-center gap-3.5 p-[18px_20px]">
-			<div
-				class="grid size-10 flex-none place-items-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10"
-			>
-				<UIcon name="i-octicon-git-pull-request-24" class="size-[18px]" />
-			</div>
+			<IconBadge icon="i-octicon-git-pull-request-24" />
 			<div class="flex w-full flex-col gap-1">
 				<span class="text-[10.5px] font-bold uppercase tracking-[0.08em] text-slate-400">{{
 					t('configSelector.sourcePr')
@@ -74,5 +64,5 @@ const repoDisplay = computed(() => {
 				/>
 			</div>
 		</div>
-	</div>
+	</AppCard>
 </template>
