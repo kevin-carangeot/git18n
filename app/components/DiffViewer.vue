@@ -8,8 +8,13 @@ defineProps<{
 
 type DiffSegment = { value: string; type: 'added' | 'removed' | 'common' }
 
+// A leaf can switch type (e.g. a nested group collapsed into a single string),
+// leaving an object on one side; stringify it instead of yielding [object Object].
+const toText = (value: unknown): string =>
+	value !== null && typeof value === 'object' ? JSON.stringify(value) : String(value)
+
 const computeDiffParts = (oldText: unknown, newText: unknown): DiffSegment[] =>
-	Diff.diffWordsWithSpace(String(oldText), String(newText)).map((part) => ({
+	Diff.diffWordsWithSpace(toText(oldText), toText(newText)).map((part) => ({
 		value: part.value,
 		type: part.added ? 'added' : part.removed ? 'removed' : 'common',
 	}))
