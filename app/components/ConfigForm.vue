@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { form, repoUrlValid, repoValid, languagesValid, apiKeyValid, canSave, save, reset } =
 	useConfigForm()
-const toast = useToast()
+const notify = useNotify()
 const { t } = useI18n()
 
 const active = ref('repo')
@@ -46,20 +46,12 @@ const missingSections = computed(() =>
 
 const onSave = () => {
 	if (!save()) return
-	toast.add({
-		title: t('configForm.savedTitle'),
-		description: t('configForm.savedDescription'),
-		color: 'success',
-	})
+	notify.success(t('configForm.savedTitle'), { description: t('configForm.savedDescription') })
 }
 
 const onReset = () => {
 	reset()
-	toast.add({
-		title: t('configForm.resetTitle'),
-		description: t('configForm.resetDescription'),
-		color: 'neutral',
-	})
+	notify.info(t('configForm.resetTitle'), { description: t('configForm.resetDescription') })
 }
 </script>
 
