@@ -1,10 +1,14 @@
 import { translateContent } from '~~/server/services/gemini'
 import { getGitConfig } from '~~/server/utils/git-config'
 
+interface TranslateBody {
+	content: Record<string, unknown>
+	targetLang: string
+}
+
 export default defineEventHandler(async (event) => {
 	const { geminiApiKey } = getGitConfig(event, { github: false, gemini: true })
-	const body = await readBody(event)
-	const { content, targetLang } = body
+	const { content, targetLang } = await readBody<TranslateBody>(event)
 
 	if (!content || !targetLang)
 		throw createError({ statusCode: 400, statusMessage: 'Missing content or targetLang' })
@@ -12,7 +16,7 @@ export default defineEventHandler(async (event) => {
 	try {
 		return await translateContent(geminiApiKey, content, targetLang)
 	} catch (error) {
-		console.error('Erreur Gemini:', error)
-		throw createError({ statusCode: 502, statusMessage: 'Erreur IA' })
+		console.error('Gemini error:', error)
+		throw createError({ statusCode: 502, statusMessage: 'AI translation failed' })
 	}
 })
