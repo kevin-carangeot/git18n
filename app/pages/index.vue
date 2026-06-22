@@ -5,7 +5,7 @@ import { localeFilePath } from '~~/shared/utils/locale-path'
 
 const { config: gitConfig, isConfigured } = useGitConfig()
 const { $api } = useNuxtApp()
-const toast = useToast()
+const notify = useNotify()
 const { t } = useI18n()
 
 // --- STATE ---
@@ -55,11 +55,7 @@ watch(selectedPull, async (newBranch) => {
 		})
 	} catch (err: unknown) {
 		console.error(err)
-		toast.add({
-			title: t('toast.errorTitle'),
-			description: t('toast.fetchDiffFailed'),
-			color: 'error',
-		})
+		notify.error(t('toast.errorTitle'), { description: t('toast.fetchDiffFailed') })
 	} finally {
 		fetchingDiff.value = false
 	}
@@ -90,18 +86,10 @@ const startTranslation = async () => {
 			)
 			loadingStatus.value[lang] = false
 		}
-		toast.add({
-			title: t('toast.successTitle'),
-			description: t('toast.translationsGenerated'),
-			color: 'success',
-		})
+		notify.success(t('toast.successTitle'), { description: t('toast.translationsGenerated') })
 	} catch (err: unknown) {
 		console.error(err)
-		toast.add({
-			title: t('toast.errorTitle'),
-			description: t('toast.translationFailed'),
-			color: 'error',
-		})
+		notify.error(t('toast.errorTitle'), { description: t('toast.translationFailed') })
 	} finally {
 		isTranslating.value = false
 	}
@@ -134,16 +122,14 @@ const createPullRequest = async () => {
 			},
 		})
 
-		toast.add({
-			title: t('toast.prCreatedTitle'),
-			color: 'success',
+		notify.success(t('toast.prCreatedTitle'), {
 			icon: 'i-heroicons-check-badge',
 			duration: 5000,
 		})
 		window.open(response.url, '_blank')
 	} catch (err: unknown) {
 		const message = err instanceof Error ? err.message : t('toast.unknownError')
-		toast.add({ title: t('toast.failedTitle'), description: message, color: 'error' })
+		notify.error(t('toast.failedTitle'), { description: message })
 	} finally {
 		isCreatingPR.value = false
 	}
