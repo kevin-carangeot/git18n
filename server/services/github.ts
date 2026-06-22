@@ -1,4 +1,5 @@
 import { merge } from '~~/server/utils/merge'
+import { localeFilePath } from '~~/shared/utils/locale-path'
 
 type JsonObject = Record<string, unknown>
 
@@ -100,14 +101,13 @@ export const createTranslationPr = async (params: {
 	const client = createGitHubClient({ owner, repo, token })
 
 	const newBranchName = `feat/i18n-update-${Date.now()}`
-	const cleanFolder = folder ? folder.replace(/\/$/, '') : 'locales'
 	const languages = Object.keys(translations)
 
 	const baseSha = await client.getBranchSha(baseBranch)
 	await client.createBranch(newBranchName, baseSha)
 
 	for (const [lang, newContent] of Object.entries(translations)) {
-		const filePath = `${cleanFolder}/${lang}.json`
+		const filePath = localeFilePath(folder, lang)
 		const existing = await client.getFile(filePath, newBranchName)
 
 		const finalJson = merge(existing?.content ?? {}, newContent)

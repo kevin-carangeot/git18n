@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { LANGUAGE_CATALOG } from '~/types/config'
-import type { DiffTree } from '~~/server/utils/diff'
+import type { PrDiffResult } from '~~/server/utils/diff'
+import { localeFilePath } from '~~/shared/utils/locale-path'
 
 const { config: gitConfig, isConfigured } = useGitConfig()
 const { $api } = useNuxtApp()
@@ -20,14 +21,7 @@ watch(isConfigured, (configured) => {
 	if (configured) refreshPulls()
 })
 
-const diffData = ref<{
-	diff: Record<string, unknown>
-	visualDiff: DiffTree
-	count: number
-	baseBranch: string
-	headBranch: string
-	indentation: string | number
-} | null>(null)
+const diffData = ref<PrDiffResult | null>(null)
 
 const fetchingDiff = ref(false)
 const isTranslating = ref(false)
@@ -55,8 +49,7 @@ watch(selectedPull, async (newBranch) => {
 	resetView()
 
 	try {
-		const folder = gitConfig.value.translationFolder
-		const filePath = folder.endsWith('/') ? `${folder}en.json` : `${folder}/en.json`
+		const filePath = localeFilePath(gitConfig.value.translationFolder, 'en')
 		diffData.value = await $api('/api/pr-diff', {
 			query: { branch: newBranch, path: filePath },
 		})
