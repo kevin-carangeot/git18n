@@ -127,15 +127,17 @@ Fines proxies vers GitHub et Gemini :
 
 ```
 app/
-  components/      # ConfigWizard, DiffViewer, TranslationEditor, LanguagePicker…
-  composables/     # useGitConfig, useConfigForm
-  pages/           # index.vue (flux principal), settings.vue
+  components/      # ConfigWizard, DiffViewer, TranslationEditor, LanguagePicker, AppCard, IconBadge…
+  composables/     # useGitConfig, useConfigForm, useConfigSteps, useNotify, useTranslationFlow
+  pages/           # index.vue (câblage UI), settings.vue
   plugins/         # api.ts ($api avec injection des en-têtes)
   types/           # config.ts (langues source/cibles)
 server/
   api/             # routes proxy GitHub / Gemini
   services/        # clients github.ts, gemini.ts
   utils/           # diff.ts, merge.ts, indent.ts, prompt.ts, git-config.ts
+shared/
+  utils/           # locale-path.ts (partagé client/serveur)
 i18n/locales/      # en.json, fr.json (UI de l'app)
 ```
 
