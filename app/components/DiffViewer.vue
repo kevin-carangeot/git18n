@@ -8,13 +8,19 @@ defineProps<{
 
 type DiffSegment = { value: string; type: 'added' | 'removed' | 'common' }
 
-// A leaf can switch type (e.g. a nested group collapsed into a single string),
-// leaving an object on one side; stringify it instead of yielding [object Object].
-const toText = (value: unknown): string =>
-	value !== null && typeof value === 'object' ? JSON.stringify(value) : String(value)
+const isObjVal = (v: unknown): boolean => v !== null && typeof v === 'object'
+
+// A leaf can switch type (a nested group collapsed into a single string, or the
+// reverse). Word-diffing the two makes no sense, so such leaves are rendered as
+// a stacked old/new pair instead; nested values are shown collapsed.
+const display = (v: unknown): string => {
+	if (Array.isArray(v)) return '[ … ]'
+	if (isObjVal(v)) return '{ … }'
+	return `"${String(v)}"`
+}
 
 const computeDiffParts = (oldText: unknown, newText: unknown): DiffSegment[] =>
-	Diff.diffWordsWithSpace(toText(oldText), toText(newText)).map((part) => ({
+	Diff.diffWordsWithSpace(String(oldText), String(newText)).map((part) => ({
 		value: part.value,
 		type: part.added ? 'added' : part.removed ? 'removed' : 'common',
 	}))
@@ -30,6 +36,23 @@ const computeDiffParts = (oldText: unknown, newText: unknown): DiffSegment[] =>
 				<span class="text-slate-700 dark:text-slate-300">"{{ key }}"</span>: {
 				<DiffViewer :data="value" />
 				<span class="text-gray-400">},</span>
+			</div>
+
+			<div
+				v-else-if="
+					value.status === 'modified' && (isObjVal(value.old) || isObjVal(value.new))
+				"
+				class="pl-4 border-l-2 border-emerald-400 bg-emerald-50/40 dark:bg-emerald-900/10"
+			>
+				<div
+					class="text-red-500/80 line-through decoration-red-500/40 dark:text-red-400/80"
+				>
+					<span>"{{ key }}"</span>: {{ display(value.old) }}
+				</div>
+				<div>
+					<span class="text-emerald-700 dark:text-emerald-400">"{{ key }}"</span>:
+					<span class="text-emerald-600">{{ display(value.new) }},</span>
+				</div>
 			</div>
 
 			<div
