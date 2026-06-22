@@ -17,75 +17,54 @@ export interface DiffTree {
 	[key: string]: DiffLeaf | DiffTree
 }
 
+const isLeaf = (node: DiffLeaf | DiffTree): node is DiffLeaf => 'status' in node
+
+const isObject = (value: unknown): value is JsonObject =>
+	typeof value === 'object' && value !== null
+
 /**
- * deeply compares two objects and returns ONLY the keys
- * from 'current' that are different or new compared to 'base'.
+ * Deeply compares two objects and returns a tree of the keys from `current`
+ * that are new or changed compared to `base`, each leaf tagged with its status.
  */
-export const calculateJsonDiff = (base: unknown, current: unknown): unknown => {
-	// If inputs are not objects (strings, null, undefined), return current
-	if (
-		typeof base !== 'object' ||
-		base === null ||
-		typeof current !== 'object' ||
-		current === null
-	) {
-		return current
-	}
+export const calculateDetailedDiff = (base: unknown, current: unknown): DiffTree => {
+	if (!isObject(base) || !isObject(current)) return {}
 
-	const baseObj = base as JsonObject
-	const currentObj = current as JsonObject
-	const diff: JsonObject = {}
+	const diff: DiffTree = {}
 
-	for (const key in currentObj) {
-		if (!Object.prototype.hasOwnProperty.call(baseObj, key)) {
-			diff[key] = currentObj[key]
-		} else if (typeof baseObj[key] === 'object' && typeof currentObj[key] === 'object') {
-			const nestedDiff = calculateJsonDiff(baseObj[key], currentObj[key])
-			// We assume nestedDiff is an object here because of the recursive call structure
-			if (nestedDiff && Object.keys(nestedDiff as JsonObject).length > 0) {
-				diff[key] = nestedDiff
-			}
-		} else if (baseObj[key] !== currentObj[key]) {
-			diff[key] = currentObj[key]
+	for (const key in current) {
+		if (!Object.prototype.hasOwnProperty.call(base, key)) {
+			diff[key] = { status: 'added', val: current[key] }
+		} else if (isObject(base[key]) && isObject(current[key])) {
+			const nested = calculateDetailedDiff(base[key], current[key])
+			if (Object.keys(nested).length > 0) diff[key] = nested
+		} else if (base[key] !== current[key]) {
+			diff[key] = { status: 'modified', old: base[key], new: current[key] }
 		}
 	}
 
 	return diff
 }
 
-export const calculateDetailedDiff = (base: unknown, current: unknown): DiffTree => {
-	// If inputs are not objects, we can't generate a detailed diff tree, return empty
-	if (
-		typeof base !== 'object' ||
-		base === null ||
-		typeof current !== 'object' ||
-		current === null
-	) {
-		return {}
+/** Reduces a diff tree to the plain values to translate (new value of each leaf). */
+export const flattenDiffTree = (tree: DiffTree): JsonObject => {
+	const out: JsonObject = {}
+	for (const key in tree) {
+		const node = tree[key]
+		out[key] = isLeaf(node)
+			? node.status === 'added'
+				? node.val
+				: node.new
+			: flattenDiffTree(node)
 	}
+	return out
+}
 
-	const baseObj = base as JsonObject
-	const currentObj = current as JsonObject
-	const diff: DiffTree = {}
-
-	for (const key in currentObj) {
-		// CASE 1 : New key
-		if (!Object.prototype.hasOwnProperty.call(baseObj, key)) {
-			diff[key] = { status: 'added', val: currentObj[key] }
-		}
-		// CASE 2 : Folder
-		else if (typeof baseObj[key] === 'object' && typeof currentObj[key] === 'object') {
-			const nested = calculateDetailedDiff(baseObj[key], currentObj[key])
-			if (Object.keys(nested).length > 0) diff[key] = nested
-		}
-		// CASE 3 : Update key
-		else if (baseObj[key] !== currentObj[key]) {
-			diff[key] = {
-				status: 'modified',
-				old: baseObj[key],
-				new: currentObj[key],
-			}
-		}
+/** Counts the actual leaf values (strings/numbers), ignoring nested containers. */
+export const countLeaves = (obj: unknown): number => {
+	if (!isObject(obj)) return 1
+	let count = 0
+	for (const key in obj) {
+		count += countLeaves(obj[key])
 	}
-	return diff
+	return count
 }

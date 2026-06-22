@@ -1,28 +1,6 @@
-import { calculateJsonDiff, calculateDetailedDiff } from '~~/server/utils/diff'
+import { calculateDetailedDiff, flattenDiffTree, countLeaves } from '~~/server/utils/diff'
 import { detectIndentation } from '~~/server/utils/indent'
 import { getGitConfig } from '~~/server/utils/git-config'
-
-// 👇 HELPER FUNCTION: Recursively counts only the final values (leaves)
-// It ignores objects/folders and counts actual strings/numbers
-const countLeafNodes = (obj: Record<string, unknown>): number => {
-	let count = 0
-
-	for (const key in obj) {
-		if (Object.prototype.hasOwnProperty.call(obj, key)) {
-			const value = obj[key]
-
-			// If it's an object (nested folder), dig deeper
-			if (typeof value === 'object' && value !== null) {
-				count += countLeafNodes(value)
-			}
-			// If it's a value (string, number, boolean), it counts as 1 key
-			else {
-				count++
-			}
-		}
-	}
-	return count
-}
 
 export default defineEventHandler(async (event) => {
 	const { owner, repo, token } = getGitConfig(event)
@@ -40,18 +18,14 @@ export default defineEventHandler(async (event) => {
 		Accept: 'application/vnd.github.raw',
 	}
 
-	// Helper to fetch and parse safely, keeping the raw text to detect indentation
+	// Keep the raw text alongside the parsed data so indentation can be detected.
 	const fetchJsonFile = async (
 		ref: string
 	): Promise<{ data: Record<string, unknown>; raw: string }> => {
 		try {
 			const raw = await $fetch<string>(
 				`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`,
-				{
-					headers,
-					query: { ref },
-					responseType: 'text',
-				}
+				{ headers, query: { ref }, responseType: 'text' }
 			)
 			return { data: JSON.parse(raw), raw }
 		} catch {
@@ -60,37 +34,30 @@ export default defineEventHandler(async (event) => {
 	}
 
 	try {
-		// 1. Get Repo Info for default branch
 		const repoInfo = await $fetch<{ default_branch: string }>(
 			`https://api.github.com/repos/${owner}/${repo}`,
-			{
-				headers: { Authorization: `Bearer ${token}` },
-			}
+			{ headers: { Authorization: `Bearer ${token}` } }
 		)
 		const baseBranch = repoInfo.default_branch
 
-		// 2. Fetch both versions
 		const [head, base] = await Promise.all([
 			fetchJsonFile(branchName),
 			fetchJsonFile(baseBranch),
 		])
 
-		// 3. Calculate Diffs
-		const diffJson = calculateJsonDiff(base.data, head.data)
 		const visualDiff = calculateDetailedDiff(base.data, head.data)
-
-		const preciseCount = countLeafNodes(diffJson)
+		const diff = flattenDiffTree(visualDiff)
 
 		return {
 			baseBranch,
 			headBranch: branchName,
-			diff: diffJson,
-			visualDiff: visualDiff,
-			count: preciseCount,
+			diff,
+			visualDiff,
+			count: countLeaves(diff),
 			indentation: detectIndentation(head.raw || base.raw),
 		}
 	} catch (err: unknown) {
-		console.error('Diff Error:', err)
+		console.error('Diff error:', err)
 		throw createError({ statusCode: 500, statusMessage: 'Diff calculation failed' })
 	}
 })

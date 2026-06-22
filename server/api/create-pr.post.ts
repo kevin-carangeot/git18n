@@ -1,10 +1,15 @@
 import { createTranslationPr } from '~~/server/services/github'
 import { getGitConfig } from '~~/server/utils/git-config'
 
+interface CreatePrBody {
+	translations: Record<string, Record<string, unknown>>
+	baseBranch: string
+	indentation?: number
+}
+
 export default defineEventHandler(async (event) => {
 	const { owner, repo, token, folder } = getGitConfig(event)
-	const body = await readBody(event)
-	const { translations, baseBranch, indentation = 2 } = body
+	const { translations, baseBranch, indentation = 2 } = await readBody<CreatePrBody>(event)
 
 	if (!translations) throw createError({ statusCode: 400, statusMessage: 'Missing parameters' })
 
