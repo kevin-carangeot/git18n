@@ -39,6 +39,7 @@ There are **no server-side secrets**. The user enters GitHub URL/token/folder an
 - `create-pr.post` — creates `feat/i18n-update-<timestamp>` off the base branch, merges each language's translations into the existing file (preserving keys), commits per-language, opens a PR.
 
 Server utils are pure functions worth knowing:
+
 - `diff.ts` — `calculateJsonDiff` (recursive added/changed keys only) and `calculateDetailedDiff` (adds `status`/`old`/`new` for the visual review).
 - `merge.ts` — deep-merges new translations over existing values without dropping untouched keys.
 - `indent.ts` — sniffs the source file's indentation so the PR preserves it.

@@ -175,9 +175,7 @@ const resetView = () => {
 					/>
 				</div>
 				<div>
-					<h2
-						class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white"
-					>
+					<h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
 						{{ t('home.reviewTitle') }}
 					</h2>
 					<p class="text-sm text-slate-500 dark:text-slate-400">

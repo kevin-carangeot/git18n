@@ -68,9 +68,7 @@ const onSave = () => {
 				>
 					{{ t('home.configEyebrow') }}
 				</p>
-				<h3
-					class="mt-1 text-base font-bold tracking-tight text-slate-900 dark:text-white"
-				>
+				<h3 class="mt-1 text-base font-bold tracking-tight text-slate-900 dark:text-white">
 					{{ currentHeadline }}
 				</h3>
 			</div>

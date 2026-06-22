@@ -22,10 +22,10 @@ export const useGitConfig = () => {
 	const isConfigured = computed(() =>
 		Boolean(
 			config.value.repoUrl &&
-				config.value.translationFolder &&
-				config.value.githubToken &&
-				config.value.geminiApiKey &&
-				config.value.targetLanguages.length >= 1
+			config.value.translationFolder &&
+			config.value.githubToken &&
+			config.value.geminiApiKey &&
+			config.value.targetLanguages.length >= 1
 		)
 	)
 

@@ -7,14 +7,24 @@ const { t } = useI18n()
 const active = ref('repo')
 
 const tabs = computed(() => [
-	{ label: t('configSteps.repoTitle'), icon: 'i-octicon-mark-github-16', slot: 'repo', value: 'repo' },
+	{
+		label: t('configSteps.repoTitle'),
+		icon: 'i-octicon-mark-github-16',
+		slot: 'repo',
+		value: 'repo',
+	},
 	{
 		label: t('configSteps.languagesTitle'),
 		icon: 'i-heroicons-language',
 		slot: 'languages',
 		value: 'languages',
 	},
-	{ label: t('configSteps.apiKeyTitle'), icon: 'i-heroicons-key', slot: 'apiKey', value: 'apiKey' },
+	{
+		label: t('configSteps.apiKeyTitle'),
+		icon: 'i-heroicons-key',
+		slot: 'apiKey',
+		value: 'apiKey',
+	},
 ])
 
 const validByValue = computed<Record<string, boolean>>(() => ({
@@ -105,7 +115,11 @@ const onReset = () => {
 		<div class="flex items-center justify-between gap-3 p-5">
 			<div
 				class="flex items-center gap-1.5 text-xs"
-				:class="canSave ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'"
+				:class="
+					canSave
+						? 'text-emerald-600 dark:text-emerald-400'
+						: 'text-amber-600 dark:text-amber-400'
+				"
 			>
 				<UIcon
 					:name="canSave ? 'i-heroicons-check-circle' : 'i-heroicons-exclamation-circle'"

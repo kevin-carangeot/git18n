@@ -28,8 +28,8 @@ const repoDisplay = computed(() => {
 			</div>
 			<div class="flex min-w-0 flex-1 flex-col gap-0.5">
 				<span class="text-[10.5px] font-bold uppercase tracking-[0.08em] text-slate-400">{{
-						t('configSelector.repository')
-					}}</span>
+					t('configSelector.repository')
+				}}</span>
 				<a
 					:href="repoUrl"
 					target="_blank"
@@ -58,8 +58,8 @@ const repoDisplay = computed(() => {
 			</div>
 			<div class="flex w-full flex-col gap-1">
 				<span class="text-[10.5px] font-bold uppercase tracking-[0.08em] text-slate-400">{{
-						t('configSelector.sourcePr')
-					}}</span>
+					t('configSelector.sourcePr')
+				}}</span>
 				<USelectMenu
 					:model-value="modelValue"
 					:loading="pending"

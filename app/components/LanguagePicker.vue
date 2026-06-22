@@ -4,9 +4,7 @@ import { LANGUAGE_CATALOG, SOURCE_LANGUAGE } from '~/types/config'
 const selected = defineModel<string[]>({ required: true })
 const { t, locale } = useI18n()
 
-const displayNames = computed(
-	() => new Intl.DisplayNames([locale.value], { type: 'language' })
-)
+const displayNames = computed(() => new Intl.DisplayNames([locale.value], { type: 'language' }))
 const nameOf = (code: string) => {
 	const name = displayNames.value.of(code) ?? code
 	return name.charAt(0).toUpperCase() + name.slice(1)
@@ -44,11 +42,7 @@ const clearAll = () => {
 					type="button"
 					:disabled="allSelected"
 					class="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium transition enabled:hover:bg-emerald-50 enabled:hover:text-emerald-600 disabled:opacity-40 dark:enabled:hover:bg-emerald-500/10"
-					:class="
-						allSelected
-							? 'text-slate-400'
-							: 'text-slate-600 dark:text-slate-300'
-					"
+					:class="allSelected ? 'text-slate-400' : 'text-slate-600 dark:text-slate-300'"
 					@click="selectAll"
 				>
 					<UIcon name="i-heroicons-check-circle" class="size-4" />
@@ -59,11 +53,7 @@ const clearAll = () => {
 					type="button"
 					:disabled="noneSelected"
 					class="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium transition enabled:hover:bg-slate-100 enabled:hover:text-slate-900 disabled:opacity-40 dark:enabled:hover:bg-white/5 dark:enabled:hover:text-white"
-					:class="
-						noneSelected
-							? 'text-slate-400'
-							: 'text-slate-600 dark:text-slate-300'
-					"
+					:class="noneSelected ? 'text-slate-400' : 'text-slate-600 dark:text-slate-300'"
 					@click="clearAll"
 				>
 					<UIcon name="i-heroicons-x-mark" class="size-4" />

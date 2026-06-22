@@ -36,7 +36,10 @@ export const createGitHubClient = ({ owner, repo, token }: GitHubClientOptions) 
 			})
 		},
 
-		async getFile(path: string, ref: string): Promise<{ content: JsonObject; sha: string } | null> {
+		async getFile(
+			path: string,
+			ref: string
+		): Promise<{ content: JsonObject; sha: string } | null> {
 			try {
 				const file = await $fetch<{ content: string; sha: string }>(
 					`${apiBase}/contents/${path}`,

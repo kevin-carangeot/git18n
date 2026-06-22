@@ -41,7 +41,9 @@ export default defineEventHandler(async (event) => {
 	}
 
 	// Helper to fetch and parse safely, keeping the raw text to detect indentation
-	const fetchJsonFile = async (ref: string): Promise<{ data: Record<string, unknown>; raw: string }> => {
+	const fetchJsonFile = async (
+		ref: string
+	): Promise<{ data: Record<string, unknown>; raw: string }> => {
 		try {
 			const raw = await $fetch<string>(
 				`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`,

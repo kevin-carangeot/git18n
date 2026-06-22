@@ -65,15 +65,15 @@ L'outil ne retraduit pas tout le fichier à chaque fois. Il **diffe le fichier s
 
 ## 🛠 Stack technique
 
-| Domaine | Technologie |
-| --- | --- |
-| Framework | [Nuxt 4](https://nuxt.com/) (mode SPA, `ssr: false`) |
-| UI | [Vue 3](https://vuejs.org/) `<script setup>` + [Nuxt UI 4](https://ui.nuxt.com/) (Tailwind CSS) |
-| Langage | TypeScript |
-| i18n de l'app | [`@nuxtjs/i18n`](https://i18n.nuxtjs.org/) (UI en `en` / `fr`) |
-| Traduction | [Google Gemini](https://ai.google.dev/gemini-api/docs) (`gemini-2.5-flash-lite`) |
-| Source de données | [GitHub REST API](https://docs.github.com/en/rest) |
-| Package manager | `pnpm` |
+| Domaine           | Technologie                                                                                     |
+| ----------------- | ----------------------------------------------------------------------------------------------- |
+| Framework         | [Nuxt 4](https://nuxt.com/) (mode SPA, `ssr: false`)                                            |
+| UI                | [Vue 3](https://vuejs.org/) `<script setup>` + [Nuxt UI 4](https://ui.nuxt.com/) (Tailwind CSS) |
+| Langage           | TypeScript                                                                                      |
+| i18n de l'app     | [`@nuxtjs/i18n`](https://i18n.nuxtjs.org/) (UI en `en` / `fr`)                                  |
+| Traduction        | [Google Gemini](https://ai.google.dev/gemini-api/docs) (`gemini-2.5-flash-lite`)                |
+| Source de données | [GitHub REST API](https://docs.github.com/en/rest)                                              |
+| Package manager   | `pnpm`                                                                                          |
 
 ---
 
@@ -116,12 +116,12 @@ Il n'y a **aucun secret côté serveur**. L'utilisateur saisit l'URL/token GitHu
 
 Fines proxies vers GitHub et Gemini :
 
-| Route | Rôle |
-| --- | --- |
-| `pulls.get` | Liste les PRs ouvertes |
-| `pr-diff.get` | Récupère le fichier source sur la branche PR et la branche par défaut, calcule le diff |
-| `translate.post` | Envoie un chunk de diff + langue cible à Gemini |
-| `create-pr.post` | Crée la branche, fusionne les traductions par langue, ouvre la PR |
+| Route            | Rôle                                                                                   |
+| ---------------- | -------------------------------------------------------------------------------------- |
+| `pulls.get`      | Liste les PRs ouvertes                                                                 |
+| `pr-diff.get`    | Récupère le fichier source sur la branche PR et la branche par défaut, calcule le diff |
+| `translate.post` | Envoie un chunk de diff + langue cible à Gemini                                        |
+| `create-pr.post` | Crée la branche, fusionne les traductions par langue, ouvre la PR                      |
 
 ### Structure du projet
 
