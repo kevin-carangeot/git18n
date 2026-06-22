@@ -17,6 +17,16 @@ export interface DiffTree {
 	[key: string]: DiffLeaf | DiffTree
 }
 
+/** Shape returned by `GET /api/pr-diff`, shared with the client. */
+export interface PrDiffResult {
+	baseBranch: string
+	headBranch: string
+	diff: Record<string, unknown>
+	visualDiff: DiffTree
+	count: number
+	indentation: string | number
+}
+
 const isLeaf = (node: DiffLeaf | DiffTree): node is DiffLeaf => 'status' in node
 
 const isObject = (value: unknown): value is JsonObject =>

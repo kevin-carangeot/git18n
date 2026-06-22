@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import type { PullOption } from '~/types/config'
+
 const props = defineProps<{
 	repoUrl: string
-	pulls: Record<string, unknown>[]
+	pulls: PullOption[] | null
 	pending: boolean
 	modelValue: string
 }>()

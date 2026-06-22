@@ -3,6 +3,12 @@ export interface LanguageOption {
 	flag: string
 }
 
+// An open pull request, as returned by `GET /api/pulls` (value is the head ref).
+export interface PullOption {
+	label: string
+	value: string
+}
+
 export interface GitConfig {
 	repoUrl: string
 	translationFolder: string
