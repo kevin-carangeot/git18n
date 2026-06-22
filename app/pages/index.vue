@@ -1,15 +1,10 @@
 <script setup lang="ts">
 import { LANGUAGE_CATALOG } from '~/types/config'
-import type { PrDiffResult } from '~~/server/utils/diff'
-import { localeFilePath } from '~~/shared/utils/locale-path'
 
 const { config: gitConfig, isConfigured } = useGitConfig()
 const { $api } = useNuxtApp()
-const notify = useNotify()
 const { t } = useI18n()
 
-// --- STATE ---
-const selectedPull = ref('')
 const {
 	data: pulls,
 	pending: pendingPulls,
@@ -21,124 +16,27 @@ watch(isConfigured, (configured) => {
 	if (configured) refreshPulls()
 })
 
-const diffData = ref<PrDiffResult | null>(null)
+const {
+	selectedPull,
+	diffData,
+	fetchingDiff,
+	isTranslating,
+	isCreatingPR,
+	editableTranslations,
+	loadingStatus,
+	hasResults,
+	startTranslation,
+	createPullRequest,
+	resetView,
+} = useTranslationFlow()
 
-const fetchingDiff = ref(false)
-const isTranslating = ref(false)
-const isCreatingPR = ref(false)
-
-const editableTranslations = ref<Record<string, string>>({})
-const loadingStatus = ref<Record<string, boolean>>({})
-
-// --- COMPUTED ---
-const hasResults = computed(() => Object.keys(loadingStatus.value).length > 0)
-
-const resultTabs = computed(() => {
-	return gitConfig.value.targetLanguages.map((lang: string) => ({
+const resultTabs = computed(() =>
+	gitConfig.value.targetLanguages.map((lang) => ({
 		label: lang.toUpperCase(),
 		code: lang,
 		slot: 'content-view',
 	}))
-})
-
-// --- ACTIONS ---
-watch(selectedPull, async (newBranch) => {
-	if (!newBranch) return
-	fetchingDiff.value = true
-	diffData.value = null
-	resetView()
-
-	try {
-		const filePath = localeFilePath(gitConfig.value.translationFolder, 'en')
-		diffData.value = await $api('/api/pr-diff', {
-			query: { branch: newBranch, path: filePath },
-		})
-	} catch (err: unknown) {
-		console.error(err)
-		notify.error(t('toast.errorTitle'), { description: t('toast.fetchDiffFailed') })
-	} finally {
-		fetchingDiff.value = false
-	}
-})
-
-const startTranslation = async () => {
-	if (!diffData.value || diffData.value?.count === 0) return
-	isTranslating.value = true
-	const languages = gitConfig.value.targetLanguages
-
-	languages.forEach((lang) => {
-		loadingStatus.value[lang] = true
-		editableTranslations.value[lang] = ''
-	})
-
-	try {
-		const contentToTranslate = diffData.value.diff
-		for (const lang of languages) {
-			if (languages.indexOf(lang) > 0) await new Promise((r) => setTimeout(r, 500))
-			const translatedJson = await $api<Record<string, unknown>>('/api/translate', {
-				method: 'POST',
-				body: { content: contentToTranslate, targetLang: lang },
-			})
-			editableTranslations.value[lang] = JSON.stringify(
-				translatedJson,
-				null,
-				diffData.value.indentation
-			)
-			loadingStatus.value[lang] = false
-		}
-		notify.success(t('toast.successTitle'), { description: t('toast.translationsGenerated') })
-	} catch (err: unknown) {
-		console.error(err)
-		notify.error(t('toast.errorTitle'), { description: t('toast.translationFailed') })
-	} finally {
-		isTranslating.value = false
-	}
-}
-
-const createPullRequest = async () => {
-	isCreatingPR.value = true
-	const translationsPayload: Record<string, unknown> = {}
-
-	try {
-		for (const [lang, contentStr] of Object.entries(editableTranslations.value)) {
-			if (!contentStr.trim()) continue
-			try {
-				translationsPayload[lang] = JSON.parse(contentStr)
-			} catch (err: unknown) {
-				console.error(err)
-				throw new Error(t('toast.invalidJson', { lang: lang.toUpperCase() }))
-			}
-		}
-
-		if (Object.keys(translationsPayload).length === 0)
-			throw new Error(t('toast.noTranslations'))
-
-		const response = await $api('/api/create-pr', {
-			method: 'POST',
-			body: {
-				baseBranch: diffData.value?.headBranch || selectedPull.value,
-				translations: translationsPayload,
-				indentation: diffData.value?.indentation ?? 2,
-			},
-		})
-
-		notify.success(t('toast.prCreatedTitle'), {
-			icon: 'i-heroicons-check-badge',
-			duration: 5000,
-		})
-		window.open(response.url, '_blank')
-	} catch (err: unknown) {
-		const message = err instanceof Error ? err.message : t('toast.unknownError')
-		notify.error(t('toast.failedTitle'), { description: message })
-	} finally {
-		isCreatingPR.value = false
-	}
-}
-
-const resetView = () => {
-	editableTranslations.value = {}
-	loadingStatus.value = {}
-}
+)
 </script>
 
 <template>
