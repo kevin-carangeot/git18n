@@ -61,7 +61,7 @@ const resultTabs = computed(() =>
 				icon="i-heroicons-arrow-left"
 				color="neutral"
 				variant="ghost"
-				:label="t('common.backToConfig')"
+				:label="t('common.translateAnotherPr')"
 				@click="resetView"
 			/>
 		</div>

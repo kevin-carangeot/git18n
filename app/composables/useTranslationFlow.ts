@@ -19,15 +19,21 @@ export const useTranslationFlow = () => {
 
 	const hasResults = computed(() => Object.keys(loadingStatus.value).length > 0)
 
-	const resetView = () => {
+	const clearResults = () => {
 		editableTranslations.value = {}
 		loadingStatus.value = {}
+	}
+
+	const resetView = () => {
+		selectedPull.value = ''
+		diffData.value = null
+		clearResults()
 	}
 
 	const fetchDiff = async (branch: string) => {
 		fetchingDiff.value = true
 		diffData.value = null
-		resetView()
+		clearResults()
 
 		try {
 			const filePath = localeFilePath(config.value.translationFolder, 'en')
